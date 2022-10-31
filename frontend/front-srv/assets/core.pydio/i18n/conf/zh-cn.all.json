@@ -294,7 +294,7 @@
     "other": "Leave empty if you do not want to use a recycle bin."
   },
   "Login Redirect": {
-    "other": "Login Redirect"
+    "other": "登陆重定向"
   },
   "Main": {
     "other": "主选项"
@@ -306,7 +306,7 @@
     "other": "新文件或文件夹的最大字符长度"
   },
   "Metadata and indexation": {
-    "other": "Metadata and indexation"
+    "other": "元数据及索引信息"
   },
   "Miscellaneous": {
     "other": "其他"
@@ -342,7 +342,7 @@
     "other": "Public Base URI"
   },
   "Pydio Main Options": {
-    "other": "Pydio 主选项"
+    "other": "平台主选项"
   },
   "Read Only": {
     "other": "只读"
