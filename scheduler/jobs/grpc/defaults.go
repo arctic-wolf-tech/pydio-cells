@@ -99,6 +99,52 @@ func getDefaultJobs() []*jobs.Job {
 		},
 	}
 
+	videoThumbnailsJob := &jobs.Job{
+		ID:                "videos-thumbs-job",
+		Owner:             common.PydioSystemUsername,
+		Label:             "Jobs.Default.Thumbs",
+		Inactive:          false,
+		MaxConcurrency:    5,
+		TasksSilentUpdate: true,
+		EventNames: []string{
+			jobs.NodeChangeEventName(tree.NodeChangeEvent_CREATE),
+			jobs.NodeChangeEventName(tree.NodeChangeEvent_UPDATE_CONTENT),
+			jobs.NodeChangeEventName(tree.NodeChangeEvent_DELETE),
+		},
+		NodeEventFilter: &jobs.NodesSelector{
+			Label: "Videios Only",
+			Query: &service.Query{
+				SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
+					Extension: "mp4",
+					MinSize:   1,
+				})},
+			},
+		},
+		Actions: []*jobs.Action{
+			{
+				ID:            "actions.videos.thumbnails",
+				Parameters:    map[string]string{"ThumbSizes": `{"sm":300,"md":1024}`},
+				TriggerFilter: triggerCreate,
+			},
+			{
+				ID:            "actions.videos.exif",
+				TriggerFilter: triggerCreate,
+				NodesFilter: &jobs.NodesSelector{
+					Label: "video only",
+					Query: &service.Query{
+						SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
+							Extension: "mp4",
+						})},
+					},
+				},
+			},
+			{
+				ID:            "actions.videos.clean",
+				TriggerFilter: triggerDelete,
+			},
+		},
+	}
+
 	stuckTasksJob := &jobs.Job{
 		ID:             "internal-prune-jobs",
 		Owner:          common.PydioSystemUsername,
@@ -171,6 +217,7 @@ func getDefaultJobs() []*jobs.Job {
 
 	defJobs := []*jobs.Job{
 		thumbnailsJob,
+		videoThumbnailsJob,
 		stuckTasksJob,
 		cleanUserDataJob,
 		cleanTemporaryOrphans,

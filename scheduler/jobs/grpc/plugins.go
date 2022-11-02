@@ -125,10 +125,14 @@ func init() {
 
 				for _, j := range getDefaultJobs() {
 					if _, e := handler.GetJob(c, &proto.GetJobRequest{JobID: j.ID}); e != nil {
+						log3.Logger(c).Info("put job: " + j.ID)
 						handler.PutJob(c, &proto.PutJobRequest{Job: j})
 					}
 					// Force re-adding thumbs job
 					if Migration230 && j.ID == "thumbs-job" {
+						handler.PutJob(c, &proto.PutJobRequest{Job: j})
+					}
+					if Migration230 && j.ID == "videos-thumbs-job" {
 						handler.PutJob(c, &proto.PutJobRequest{Job: j})
 					}
 				}

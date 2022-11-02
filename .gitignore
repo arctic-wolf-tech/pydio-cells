@@ -28,6 +28,7 @@ package-lock.json
 /.project
 /.vscode/
 /debug
+__debug_bin
 
 minio
 minio.exe

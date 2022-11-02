@@ -106,11 +106,13 @@ import (
 	_ "github.com/pydio/cells/v4/scheduler/actions/scheduler"
 	_ "github.com/pydio/cells/v4/scheduler/actions/tools"
 	_ "github.com/pydio/cells/v4/scheduler/actions/tree"
+	_ "github.com/pydio/cells/v4/scheduler/actions/videos"
 
 	// Brokers
 	_ "github.com/pydio/cells/v4/common/broker/grpcpubsub"
 	_ "github.com/pydio/cells/v4/common/broker/nats"
 	_ "gocloud.dev/pubsub/mempubsub"
+
 	// _ "gocloud.dev/pubsub/natspubsub"
 	_ "gocloud.dev/pubsub/rabbitpubsub"
 
