@@ -826,9 +826,9 @@ func TestSmallArborescenceWithCache(t *testing.T) {
 func TestOtherArborescenceWithCache(t *testing.T) {
 	Convey("Re-adding a file - Success", t, func() {
 		arborescence := []string{
-			"pydiods1/Dossier Chateau de Vaux - Dossier diag -",
-			"pydiods1/Dossier Chateau de Vaux - Dossier diag -/Fonts",
-			"pydiods1/Dossier Chateau de Vaux - Dossier diag -/Links",
+			"cells_default/Dossier Chateau de Vaux - Dossier diag -",
+			"cells_default/Dossier Chateau de Vaux - Dossier diag -/Fonts",
+			"cells_default/Dossier Chateau de Vaux - Dossier diag -/Links",
 		}
 
 		newSession()

@@ -21,10 +21,11 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/types/known/anypb"
-	"os"
 
 	"github.com/pydio/cells/v4/common"
 	"github.com/pydio/cells/v4/common/client/grpc"
@@ -52,11 +53,11 @@ DESCRIPTION
 
 EXAMPLES
 
-  1. To trigger the rethumbing of "pydiods1" datasource:
-  $ ` + os.Args[0] + ` admin datasource rethumb --datasource=pydiods1
+  1. To trigger the rethumbing of "cells_default" datasource:
+  $ ` + os.Args[0] + ` admin datasource rethumb --datasource=cells_default
 
   2. Process only the folder/subfolder data :
-  $ ` + os.Args[0] + ` admin datasource rethumb --datasource=pydiods1 --path=folder/subfolder
+  $ ` + os.Args[0] + ` admin datasource rethumb --datasource=cells_default --path=folder/subfolder
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -107,7 +108,7 @@ EXAMPLES
 }
 
 func init() {
-	dsRethumbCmd.PersistentFlags().StringVarP(&rethumbDsName, "datasource", "d", "pydiods1", "Name of datasource to process")
+	dsRethumbCmd.PersistentFlags().StringVarP(&rethumbDsName, "datasource", "d", "cells_default", "Name of datasource to process")
 	dsRethumbCmd.PersistentFlags().StringVarP(&rethumbUserName, "username", "u", "", "Username under which the job will be executed (generally admin)")
 	dsRethumbCmd.PersistentFlags().StringVarP(&rethumbTimeout, "timeout", "t", "30m", "Maximum job duration")
 	dsRethumbCmd.PersistentFlags().IntVarP(&rethumbMaxConcurrency, "concurrency", "c", 10, "Maximum concurrency for computing files hashes")

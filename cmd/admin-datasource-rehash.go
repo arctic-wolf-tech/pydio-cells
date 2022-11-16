@@ -56,11 +56,11 @@ DESCRIPTION
 
 EXAMPLES
 
-  1. To trigger the rehashing of "pydiods1" datasource:
-  $ ` + os.Args[0] + ` admin datasource rehash --datasource=pydiods1
+  1. To trigger the rehashing of "cells_default" datasource:
+  $ ` + os.Args[0] + ` admin datasource rehash --datasource=cells_default
 
   2. Process only the folder/subfolder data :
-  $ ` + os.Args[0] + ` admin datasource rehash --datasource=pydiods1 --path=folder/subfolder
+  $ ` + os.Args[0] + ` admin datasource rehash --datasource=cells_default --path=folder/subfolder
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -116,7 +116,7 @@ EXAMPLES
 }
 
 func init() {
-	dsRehashCmd.PersistentFlags().StringVarP(&rehashDsName, "datasource", "d", "pydiods1", "Name of datasource to process")
+	dsRehashCmd.PersistentFlags().StringVarP(&rehashDsName, "datasource", "d", "cells_default", "Name of datasource to process")
 	dsRehashCmd.PersistentFlags().StringVarP(&rehashUserName, "username", "u", "", "Username under which the job will be executed (generally admin)")
 	dsRehashCmd.PersistentFlags().StringVarP(&rehashPath, "path", "p", "", "Restrict operation to a specific folder")
 	dsRehashCmd.PersistentFlags().StringVarP(&rehashTimeout, "timeout", "t", "30m", "Maximum job duration")

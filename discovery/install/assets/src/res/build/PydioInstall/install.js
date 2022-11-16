@@ -4,9 +4,20 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; };
+}();
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = Object.assign || function(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _react = require('react');
 
@@ -60,9 +71,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); }
+    subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties(obj, keys) {
+    var target = {};
+    for (var i in obj) {
+        if (keys.indexOf(i) >= 0) continue;
+        if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+        target[i] = obj[i];
+    }
+    return target;
+}
 
 var defaultLanguage = 'en-us';
 
@@ -182,7 +205,7 @@ var renderSelectField = function renderSelectField(_ref6) {
  * <small>(The vertical stepper can also be used without `<StepContent>` to display a basic stepper.)</small>
  */
 
-var InstallForm = function (_React$Component) {
+var InstallForm = function(_React$Component) {
     _inherits(InstallForm, _React$Component);
 
     function InstallForm(props) {
@@ -203,14 +226,14 @@ var InstallForm = function (_React$Component) {
             lang: defaultLanguage
         };
 
-        _this.reset = function () {
+        _this.reset = function() {
             _this.setState({
                 stepIndex: 0,
                 finished: false
             });
         };
 
-        _this.handleNext = function () {
+        _this.handleNext = function() {
             var stepIndex = _this.state.stepIndex;
 
             _this.setState({
@@ -219,7 +242,7 @@ var InstallForm = function (_React$Component) {
             });
         };
 
-        _this.handlePrev = function () {
+        _this.handlePrev = function() {
             var stepIndex = _this.state.stepIndex;
 
             if (stepIndex > 0) {
@@ -227,13 +250,13 @@ var InstallForm = function (_React$Component) {
             }
         };
 
-        api.getInstall().then(function (values) {
+        api.getInstall().then(function(values) {
             props.load(values.config);
             if (values.config && values.config.dbUseDefaults) {
                 _this.setState({ dbUseDefaultsToggle: true });
             }
         });
-        api.getAgreement().then(function (resp) {
+        api.getAgreement().then(function(resp) {
             _this.setState({ agreementText: resp.Text });
         });
         return _this;
@@ -257,7 +280,7 @@ var InstallForm = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            client.pollEvents(function (events) {
+            client.pollEvents(function(events) {
                 var newEvents = [].concat(_toConsumableArray(_this2.state.installEvents), _toConsumableArray(events));
                 var last = events.pop(); // update last progress
                 var p = _this2.state.installProgress;
@@ -265,7 +288,7 @@ var InstallForm = function (_React$Component) {
                     p = last.data.Progress;
                 }
                 _this2.setState({ installEvents: newEvents, installProgress: p });
-            }, function () {
+            }, function() {
                 // This is call when it is finished
                 var newEvents = [].concat(_toConsumableArray(_this2.state.installEvents), [{ data: { Progress: 100, Message: "Server Restarted" } }]);
                 _this2.setState({
@@ -273,19 +296,19 @@ var InstallForm = function (_React$Component) {
                     serverRestarted: true,
                     willReloadIn: 5
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     _this2.setState({ willReloadIn: 4 });
                 }, 1000);
-                setTimeout(function () {
+                setTimeout(function() {
                     _this2.setState({ willReloadIn: 3 });
                 }, 2000);
-                setTimeout(function () {
+                setTimeout(function() {
                     _this2.setState({ willReloadIn: 2 });
                 }, 3000);
-                setTimeout(function () {
+                setTimeout(function() {
                     _this2.setState({ willReloadIn: 1 });
                 }, 4000);
-                setTimeout(function () {
+                setTimeout(function() {
                     window.location.reload();
                 }, 5000);
             });
@@ -301,13 +324,13 @@ var InstallForm = function (_React$Component) {
             request.Name = "DB";
             request.Config = _InstallInstallConfig2.default.constructFromObject(dbConfig);
             this.setState({ performingCheck: 'DB' });
-            api.performInstallCheck(request).then(function (res) {
+            api.performInstallCheck(request).then(function(res) {
                 var checkResult = res.Result;
                 callback(checkResult);
-            }).catch(function (reason) {
+            }).catch(function(reason) {
                 var checkResult = _InstallCheckResult2.default.constructFromObject({ Success: false, JsonResult: JSON.stringify({ error: reason.message }) });
                 callback(checkResult);
-            }).finally(function () {
+            }).finally(function() {
                 _this3.setState({ performingCheck: null });
             });
         }
@@ -322,13 +345,13 @@ var InstallForm = function (_React$Component) {
             request.Name = "MONGO";
             request.Config = _InstallInstallConfig2.default.constructFromObject({ DocumentsDSN: DocumentsDSN });
             this.setState({ performingCheck: 'MONGO' });
-            api.performInstallCheck(request).then(function (res) {
+            api.performInstallCheck(request).then(function(res) {
                 var checkResult = res.Result;
                 callback(checkResult);
-            }).catch(function (reason) {
+            }).catch(function(reason) {
                 var checkResult = _InstallCheckResult2.default.constructFromObject({ Name: 'MONGO', Success: false, JsonResult: JSON.stringify({ error: reason.message }) });
                 callback(checkResult);
-            }).finally(function () {
+            }).finally(function() {
                 _this4.setState({ performingCheck: null });
             });
         }
@@ -341,13 +364,13 @@ var InstallForm = function (_React$Component) {
             request.Name = "LICENSE";
             request.Config = _InstallInstallConfig2.default.constructFromObject({ licenseString: this.props.licenseString });
             this.setState({ performingCheck: 'LICENSE' });
-            api.performInstallCheck(request).then(function (res) {
+            api.performInstallCheck(request).then(function(res) {
                 var checkResult = res.Result;
                 callback(checkResult);
-            }).catch(function (reason) {
+            }).catch(function(reason) {
                 var checkResult = _InstallCheckResult2.default.constructFromObject({ Name: "LICENSE", Success: false, JsonResult: JSON.stringify({ error: reason.message }) });
                 callback(checkResult);
-            }).finally(function () {
+            }).finally(function() {
                 _this5.setState({ performingCheck: null });
             });
         }
@@ -363,13 +386,13 @@ var InstallForm = function (_React$Component) {
             request.Name = keys ? "S3_KEYS" : "S3_BUCKETS";
             request.Config = _InstallInstallConfig2.default.constructFromObject(s3Config);
             this.setState({ performingCheck: 'S3_KEYS', s3CheckKeysSuccess: null, s3CheckKeysError: null, s3BucketsPrefix: '' });
-            api.performInstallCheck(request).then(function (res) {
+            api.performInstallCheck(request).then(function(res) {
                 var checkResult = res.Result;
                 callback(checkResult);
-            }).catch(function (reason) {
+            }).catch(function(reason) {
                 var checkResult = _InstallCheckResult2.default.constructFromObject({ Name: "S3_KEYS", Success: false, JsonResult: JSON.stringify({ error: reason.message }) });
                 callback(checkResult);
-            }).finally(function () {
+            }).finally(function() {
                 _this6.setState({ performingCheck: null });
             });
         }
@@ -385,13 +408,13 @@ var InstallForm = function (_React$Component) {
                 buckets = [];
             }
             var keys = ['Default', 'Personal', 'Cells', 'Binaries', 'Thumbs', 'Versions'];
-            var newBuckets = keys.map(function (k) {
+            var newBuckets = keys.map(function(k) {
                 return s3Config['dsS3Bucket' + k];
             });
-            var notExist = newBuckets.filter(function (b) {
+            var notExist = newBuckets.filter(function(b) {
                 return buckets.indexOf(b) === -1;
             });
-            var exist = newBuckets.filter(function (b) {
+            var exist = newBuckets.filter(function(b) {
                 return buckets.indexOf(b) > -1;
             });
             var result = {};
@@ -432,8 +455,7 @@ var InstallForm = function (_React$Component) {
                         notExist.join(', '),
                         '. ',
                         _react2.default.createElement(
-                            'span',
-                            { style: { color: '"#c62828"' } },
+                            'span', { style: { color: '"#c62828"' } },
                             this.t('form.bucketList.warnCreate')
                         )
                     );
@@ -477,7 +499,7 @@ var InstallForm = function (_React$Component) {
             switch (stepIndex) {
                 case 1 + stepOffset:
                     nextAction = function nextAction() {
-                        _this7.checkDbConfig(function (checkResult) {
+                        _this7.checkDbConfig(function(checkResult) {
                             if (checkResult.Success) {
                                 var successData = JSON.parse(checkResult.JsonResult);
                                 if (!successData || !successData.tablesFound || tablesFoundConfirm) {
@@ -495,7 +517,8 @@ var InstallForm = function (_React$Component) {
                     break;
                 case 3 + stepOffset:
                     nextAction = function nextAction() {
-                        _this7.handleNext();handleSubmit();
+                        _this7.handleNext();
+                        handleSubmit();
                     };
                     if (dsType === 'S3') {
                         var _state2 = this.state,
@@ -506,7 +529,7 @@ var InstallForm = function (_React$Component) {
                         if (!nextInvalid && this.renderS3BucketsList().NeedsCreates) {
                             nextAction = function nextAction() {
                                 // First create buckets if necessary
-                                _this7.checkS3Config(function (result) {
+                                _this7.checkS3Config(function(result) {
                                     var data = JSON.parse(result.JsonResult);
                                     if (result.Success) {
                                         _this7.handleNext();
@@ -525,8 +548,7 @@ var InstallForm = function (_React$Component) {
             }
 
             return _react2.default.createElement(
-                'div',
-                { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
+                'div', { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
                 leftAction,
                 _react2.default.createElement('span', { style: { flex: 1 } }),
                 _react2.default.createElement(
@@ -626,9 +648,14 @@ var InstallForm = function (_React$Component) {
                 leftAction = _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement(_materialUi.Checkbox, { checked: licenseAgreed, label: this.t('welcome.agreed'), style: { width: 300 }, onCheck: function onCheck() {
+                    _react2.default.createElement(_materialUi.Checkbox, {
+                        checked: licenseAgreed,
+                        label: this.t('welcome.agreed'),
+                        style: { width: 300 },
+                        onCheck: function onCheck() {
                             _this8.setState({ licenseAgreed: !licenseAgreed });
-                        } })
+                        }
+                    })
                 );
             }
             if (licenseRequired) {
@@ -636,7 +663,7 @@ var InstallForm = function (_React$Component) {
                 var licCheckPassed = void 0,
                     nextAction = void 0;
                 if (initialChecks && initialChecks.length) {
-                    initialChecks.map(function (c) {
+                    initialChecks.map(function(c) {
                         if (c.Name === "LICENSE" && c.Success) {
                             licCheckPassed = JSON.parse(c.JsonResult);
                             nextAction = _this8.handleNext.bind(_this8);
@@ -645,7 +672,7 @@ var InstallForm = function (_React$Component) {
                 }
                 if (!nextAction) {
                     nextAction = function nextAction() {
-                        _this8.checkLicenseConfig(function (result) {
+                        _this8.checkLicenseConfig(function(result) {
                             if (result.Success) {
                                 _this8.setState({ licCheckFailed: false });
                                 _this8.handleNext();
@@ -656,44 +683,36 @@ var InstallForm = function (_React$Component) {
                     };
                 }
                 additionalStep = _react2.default.createElement(
-                    _materialUi.Step,
-                    { key: "license", style: stepperStyles.step },
+                    _materialUi.Step, { key: "license", style: stepperStyles.step },
                     _react2.default.createElement(
-                        _materialUi.StepLabel,
-                        { style: stepIndex >= 1 ? stepperStyles.label : {} },
+                        _materialUi.StepLabel, { style: stepIndex >= 1 ? stepperStyles.label : {} },
                         this.t('license.stepLabel')
                     ),
                     _react2.default.createElement(
-                        _materialUi.StepContent,
-                        { style: stepperStyles.content },
+                        _materialUi.StepContent, { style: stepperStyles.content },
                         _react2.default.createElement(
-                            'div',
-                            { style: stepperStyles.contentScroller },
+                            'div', { style: stepperStyles.contentScroller },
                             _react2.default.createElement(
                                 'h3',
                                 null,
                                 this.t('license.title')
                             ),
                             licCheckPassed && _react2.default.createElement(
-                                'div',
-                                { style: { padding: '20px 0', color: '#388E3C', fontSize: 14 } },
+                                'div', { style: { padding: '20px 0', color: '#388E3C', fontSize: 14 } },
                                 this.t('license.success'),
                                 _react2.default.createElement('br', null),
                                 this.t('license.details').replace('%count', licCheckPassed.users).replace('%expiration', new Date(licCheckPassed.expireTime * 1000).toISOString())
                             ),
                             licCheckFailed && _react2.default.createElement(
-                                'div',
-                                { style: { color: '#E53935', paddingTop: 10, fontWeight: 500 } },
+                                'div', { style: { color: '#E53935', paddingTop: 10, fontWeight: 500 } },
                                 this.t('license.failed')
-                            ),
-                            !licCheckPassed && _react2.default.createElement(
+                            ), !licCheckPassed && _react2.default.createElement(
                                 'div',
                                 null,
                                 this.t('license.required'),
                                 ' ',
                                 _react2.default.createElement(
-                                    'a',
-                                    { href: "mailto:services@pydio.com" },
+                                    'a', { href: "mailto:services@pydio.com" },
                                     'services@pydio.com'
                                 ),
                                 '.',
@@ -701,8 +720,7 @@ var InstallForm = function (_React$Component) {
                             )
                         ),
                         _react2.default.createElement(
-                            'div',
-                            { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
+                            'div', { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
                             _react2.default.createElement('span', { style: { flex: 1 } }),
                             _react2.default.createElement(
                                 'div',
@@ -717,19 +735,15 @@ var InstallForm = function (_React$Component) {
 
             var steps = [];
             steps.push(_react2.default.createElement(
-                _materialUi.Step,
-                { key: steps.length - 1, style: stepperStyles.step },
+                _materialUi.Step, { key: steps.length - 1, style: stepperStyles.step },
                 _react2.default.createElement(
-                    _materialUi.StepLabel,
-                    { style: stepperStyles.label },
+                    _materialUi.StepLabel, { style: stepperStyles.label },
                     this.t('welcome.stepLabel')
                 ),
                 _react2.default.createElement(
-                    _materialUi.StepContent,
-                    { style: stepperStyles.content },
+                    _materialUi.StepContent, { style: stepperStyles.content },
                     _react2.default.createElement(
-                        'div',
-                        { style: stepperStyles.contentScroller },
+                        'div', { style: stepperStyles.contentScroller },
                         _react2.default.createElement(
                             'h3',
                             null,
@@ -741,8 +755,7 @@ var InstallForm = function (_React$Component) {
                             this.t('welcome.legend')
                         ),
                         _react2.default.createElement(
-                            'pre',
-                            { style: { height: 350, border: '1px solid #CFD8DC', borderRadius: 2, backgroundColor: '#ECEFF1', padding: 10, overflowY: 'scroll', lineHeight: '1.4em' } },
+                            'pre', { style: { height: 350, border: '1px solid #CFD8DC', borderRadius: 2, backgroundColor: '#ECEFF1', padding: 10, overflowY: 'scroll', lineHeight: '1.4em' } },
                             agreementText
                         )
                     ),
@@ -759,19 +772,15 @@ var InstallForm = function (_React$Component) {
 
             var tablesFound = dbCheckSuccess && dbCheckSuccess.tablesFound;
             steps.push(_react2.default.createElement(
-                _materialUi.Step,
-                { key: steps.length - 1, style: stepperStyles.step },
+                _materialUi.Step, { key: steps.length - 1, style: stepperStyles.step },
                 _react2.default.createElement(
-                    _materialUi.StepLabel,
-                    { style: stepIndex >= 1 + stepOffset ? stepperStyles.label : {} },
+                    _materialUi.StepLabel, { style: stepIndex >= 1 + stepOffset ? stepperStyles.label : {} },
                     this.t('database.stepLabel')
                 ),
                 _react2.default.createElement(
-                    _materialUi.StepContent,
-                    { style: stepperStyles.content },
+                    _materialUi.StepContent, { style: stepperStyles.content },
                     _react2.default.createElement(
-                        'div',
-                        { style: stepperStyles.contentScroller },
+                        'div', { style: stepperStyles.contentScroller },
                         _react2.default.createElement(
                             'h3',
                             null,
@@ -785,124 +794,115 @@ var InstallForm = function (_React$Component) {
                                 null,
                                 this.t('database.useDefaultsSet')
                             ),
-                            _react2.default.createElement(_reduxForm.Field, { name: 'dbUseDefaults', component: renderInvertCheckbox, label: _react2.default.createElement(
+                            _react2.default.createElement(_reduxForm.Field, {
+                                name: 'dbUseDefaults',
+                                component: renderInvertCheckbox,
+                                label: _react2.default.createElement(
                                     'span',
                                     null,
                                     this.t('database.forceConfigure'),
                                     ' ',
                                     _react2.default.createElement(
-                                        'span',
-                                        { style: { fontWeight: 500 } },
+                                        'span', { style: { fontWeight: 500 } },
                                         this.t('database.legend.bold'),
                                         '.'
                                     )
-                                ) })
-                        ),
-                        !dbUseDefaultsToggle && _react2.default.createElement(
+                                )
+                            })
+                        ), !dbUseDefaultsToggle && _react2.default.createElement(
                             'span',
                             null,
                             this.t('database.legend'),
                             ' ',
                             _react2.default.createElement(
-                                'span',
-                                { style: { fontWeight: 500 } },
+                                'span', { style: { fontWeight: 500 } },
                                 this.t('database.legend.bold'),
                                 '.'
                             )
                         ),
                         dbCheckError && _react2.default.createElement(
-                            'div',
-                            { style: { color: '#E53935', paddingTop: 10, fontWeight: 500 } },
+                            'div', { style: { color: '#E53935', paddingTop: 10, fontWeight: 500 } },
                             dbCheckError
                         ),
                         (!dbUseDefaultsToggle || !dbConfig.dbUseDefaults) && _react2.default.createElement(
-                            'div',
-                            { style: flexContainer },
+                            'div', { style: flexContainer },
                             _react2.default.createElement(
-                                _reduxForm.Field,
-                                { name: 'dbConnectionType', component: renderSelectField },
+                                _reduxForm.Field, { name: 'dbConnectionType', component: renderSelectField },
                                 _react2.default.createElement(_materialUi.MenuItem, { value: 'tcp', primaryText: this.t('form.dbConnectionType.tcp') }),
                                 _react2.default.createElement(_materialUi.MenuItem, { value: 'socket', primaryText: this.t('form.dbConnectionType.socket') }),
                                 _react2.default.createElement(_materialUi.MenuItem, { value: 'manual', primaryText: this.t('form.dbConnectionType.manual') })
                             ),
                             dbConnectionType === "tcp" && _react2.default.createElement(
-                                'div',
-                                { style: flexContainer },
+                                'div', { style: flexContainer },
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex' } },
+                                    'div', { style: { display: 'flex' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 4, marginRight: 2 } },
+                                        'div', { style: { flex: 4, marginRight: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbTCPHostname', component: renderTextField, floatingLabel: this.t('form.dbTCPHostname.label'), label: this.t('form.dbTCPHostname.legend') })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 2 } },
+                                        'div', { style: { flex: 1, marginLeft: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbTCPPort', component: renderTextField, floatingLabel: this.t('form.dbTCPPort.label'), label: this.t('form.dbTCPPort.legend') })
                                     )
                                 ),
                                 _react2.default.createElement(_reduxForm.Field, { name: 'dbTCPName', component: renderTextField, floatingLabel: this.t('form.dbName.label'), label: this.t('form.dbName.legend') }),
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex' } },
+                                    'div', { style: { display: 'flex' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginRight: 2 } },
+                                        'div', { style: { flex: 1, marginRight: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbTCPUser', component: renderTextField, floatingLabel: this.t('form.dbUser.label'), label: this.t('form.dbUser.legend') })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 2 } },
+                                        'div', { style: { flex: 1, marginLeft: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbTCPPassword', component: renderPassField, floatingLabel: this.t('form.dbPassword.label'), label: this.t('form.dbPassword.legend') })
                                     )
                                 )
                             ),
                             dbConnectionType === "socket" && _react2.default.createElement(
-                                'div',
-                                { style: flexContainer },
+                                'div', { style: flexContainer },
                                 _react2.default.createElement(_reduxForm.Field, { name: 'dbSocketFile', component: renderTextField, floatingLabel: this.t('form.dbSocketFile.label'), label: this.t('form.dbSocketFile.legend'), defaultValue: '/tmp/mysql.sock' }),
                                 _react2.default.createElement(_reduxForm.Field, { name: 'dbSocketName', component: renderTextField, floatingLabel: this.t('form.dbName.label'), label: this.t('form.dbName.legend'), defaultValue: 'pydio' }),
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex' } },
+                                    'div', { style: { display: 'flex' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginRight: 2 } },
+                                        'div', { style: { flex: 1, marginRight: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbSocketUser', component: renderTextField, floatingLabel: this.t('form.dbUser.label'), label: this.t('form.dbUser.legend') })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 2 } },
+                                        'div', { style: { flex: 1, marginLeft: 2 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'dbSocketPassword', component: renderTextField, floatingLabel: this.t('form.dbPassword.label'), label: this.t('form.dbPassword.legend') })
                                     )
                                 )
                             ),
                             dbConnectionType === "manual" && _react2.default.createElement(
-                                'div',
-                                { style: flexContainer },
+                                'div', { style: flexContainer },
                                 _react2.default.createElement(_reduxForm.Field, { name: 'dbManualDSN', component: renderTextField, floatingLabel: this.t('form.dbManualDSN.label'), label: this.t('form.dbManualDSN.legend') })
                             )
                         ),
                         tablesFound && _react2.default.createElement(
-                            'div',
-                            { style: { marginTop: 40, display: 'flex' } },
+                            'div', { style: { marginTop: 40, display: 'flex' } },
                             _react2.default.createElement(
                                 'div',
                                 null,
-                                _react2.default.createElement(_materialUi.Checkbox, { checked: tablesFoundConfirm, onCheck: function onCheck(e, v) {
+                                _react2.default.createElement(_materialUi.Checkbox, {
+                                    checked: tablesFoundConfirm,
+                                    onCheck: function onCheck(e, v) {
                                         _this8.setState({ tablesFoundConfirm: v });
-                                    } })
+                                    }
+                                })
                             ),
                             _react2.default.createElement(
-                                'div',
-                                { style: { color: '#E65100', flex: 1 } },
+                                'div', { style: { color: '#E65100', flex: 1 } },
                                 this.t('database.installDetected'),
                                 _react2.default.createElement(
-                                    'a',
-                                    { style: { fontWeight: 500, cursor: 'pointer' }, onClick: function onClick(e) {
-                                            e.preventDefault();e.stopPropagation();_this8.setState({ dbCheckSuccess: null, tablesFoundConfirm: null });
-                                        } },
+                                    'a', {
+                                        style: { fontWeight: 500, cursor: 'pointer' },
+                                        onClick: function onClick(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            _this8.setState({ dbCheckSuccess: null, tablesFoundConfirm: null });
+                                        }
+                                    },
                                     this.t('database.installDetected.retry')
                                 ),
                                 '.'
@@ -915,19 +915,15 @@ var InstallForm = function (_React$Component) {
 
             var adminFound = dbCheckSuccess && dbCheckSuccess.adminFound;
             steps.push(_react2.default.createElement(
-                _materialUi.Step,
-                { key: steps.length - 1, style: stepperStyles.step },
+                _materialUi.Step, { key: steps.length - 1, style: stepperStyles.step },
                 _react2.default.createElement(
-                    _materialUi.StepLabel,
-                    { style: stepIndex >= 2 + stepOffset ? stepperStyles.label : {} },
+                    _materialUi.StepLabel, { style: stepIndex >= 2 + stepOffset ? stepperStyles.label : {} },
                     this.t('admin.stepLabel')
                 ),
                 _react2.default.createElement(
-                    _materialUi.StepContent,
-                    { style: stepperStyles.content },
+                    _materialUi.StepContent, { style: stepperStyles.content },
                     _react2.default.createElement(
-                        'div',
-                        { style: stepperStyles.contentScroller },
+                        'div', { style: stepperStyles.contentScroller },
                         _react2.default.createElement(
                             'h3',
                             null,
@@ -935,36 +931,34 @@ var InstallForm = function (_React$Component) {
                         ),
                         this.t('admin.legend'),
                         _react2.default.createElement(
-                            'div',
-                            { style: flexContainer },
+                            'div', { style: flexContainer },
                             _react2.default.createElement(_reduxForm.Field, { name: 'frontendApplicationTitle', component: renderTextField, floatingLabel: this.t('form.frontendApplicationTitle.label'), label: this.t('form.frontendApplicationTitle.legend') }),
                             _react2.default.createElement(
-                                _reduxForm.Field,
-                                { name: 'frontendDefaultLanguage', component: renderSelectField, label: this.t('form.frontendDefaultLanguage.label') },
+                                _reduxForm.Field, { name: 'frontendDefaultLanguage', component: renderSelectField, label: this.t('form.frontendDefaultLanguage.label') },
                                 supportedLanguages
                             ),
                             adminFound && _react2.default.createElement(
-                                'div',
-                                { style: { marginTop: 10 } },
-                                _react2.default.createElement(_materialUi.Checkbox, { checked: adminFoundOverride, onCheck: function onCheck(e, v) {
+                                'div', { style: { marginTop: 10 } },
+                                _react2.default.createElement(_materialUi.Checkbox, {
+                                    checked: adminFoundOverride,
+                                    onCheck: function onCheck(e, v) {
                                         _this8.setState({ adminFoundOverride: v });
-                                    }, label: this.t('admin.adminFound') })
+                                    },
+                                    label: this.t('admin.adminFound')
+                                })
                             ),
                             (!adminFound || adminFoundOverride) && _react2.default.createElement(
                                 'div',
                                 null,
                                 _react2.default.createElement(_reduxForm.Field, { name: 'frontendLogin', component: renderTextField, floatingLabel: this.t('form.frontendLogin.label'), label: this.t('form.frontendLogin.legend') }),
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex' } },
+                                    'div', { style: { display: 'flex' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginRight: 5 } },
+                                        'div', { style: { flex: 1, marginRight: 5 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'frontendPassword', component: renderPassField, floatingLabel: this.t('form.frontendPassword.label'), label: this.t('form.frontendPassword.legend') })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 5 } },
+                                        'div', { style: { flex: 1, marginLeft: 5 } },
                                         _react2.default.createElement(_reduxForm.Field, { name: 'frontendRepeatPassword', component: renderPassField, floatingLabel: this.t('form.frontendRepeatPassword.label'), label: this.t('form.frontendRepeatPassword.legend') })
                                     )
                                 )
@@ -1002,19 +996,15 @@ var InstallForm = function (_React$Component) {
                 s3Config = _props3.s3Config;
 
             steps.push(_react2.default.createElement(
-                _materialUi.Step,
-                { key: steps.length - 1, style: stepperStyles.step },
+                _materialUi.Step, { key: steps.length - 1, style: stepperStyles.step },
                 _react2.default.createElement(
-                    _materialUi.StepLabel,
-                    { style: stepIndex >= 3 + stepOffset ? stepperStyles.label : {} },
+                    _materialUi.StepLabel, { style: stepIndex >= 3 + stepOffset ? stepperStyles.label : {} },
                     this.t('advanced.stepLabel')
                 ),
                 _react2.default.createElement(
-                    _materialUi.StepContent,
-                    { style: stepperStyles.content },
+                    _materialUi.StepContent, { style: stepperStyles.content },
                     _react2.default.createElement(
-                        'div',
-                        { style: stepperStyles.contentScroller },
+                        'div', { style: stepperStyles.contentScroller },
                         _react2.default.createElement(
                             'h3',
                             null,
@@ -1030,49 +1020,60 @@ var InstallForm = function (_React$Component) {
                             labelPosition: "left",
                             style: { marginTop: 10, marginBottom: 8 },
                             labelStyle: { fontSize: 14 }
-                        }),
-                        !!DocumentsDSN && _react2.default.createElement(
-                            'div',
-                            { style: { paddingBottom: 20 } },
-                            !mongoDSNError && _react2.default.createElement(
-                                'div',
-                                { style: { opacity: .7, width: 440 } },
+                        }), !!DocumentsDSN && _react2.default.createElement(
+                            'div', { style: { paddingBottom: 20 } }, !mongoDSNError && _react2.default.createElement(
+                                'div', { style: { opacity: .7, width: 440 } },
                                 this.t('advanced.mongo.legend')
-                            ),
-                            !!mongoDSNError && _react2.default.createElement(
-                                'div',
-                                { style: { color: '#E53935' } },
+                            ), !!mongoDSNError && _react2.default.createElement(
+                                'div', { style: { color: '#E53935' } },
                                 mongoDSNError
                             ),
                             _react2.default.createElement(
-                                'div',
-                                { style: { display: 'flex', alignItems: 'flex-end' } },
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNURL.hostname, onChange: function onChange(e, v) {
+                                'div', { style: { display: 'flex', alignItems: 'flex-end' } },
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNURL.hostname,
+                                    onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'hostname', v);
-                                    }, floatingLabelText: this.t('advanced.mongo.host'), fullWidth: true, style: { marginRight: 10 }, floatingLabelFixed: true }),
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNURL.port, onChange: function onChange(e, v) {
+                                    },
+                                    floatingLabelText: this.t('advanced.mongo.host'),
+                                    fullWidth: true,
+                                    style: { marginRight: 10 },
+                                    floatingLabelFixed: true
+                                }),
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNURL.port,
+                                    onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'port', v);
-                                    }, floatingLabelText: this.t('advanced.mongo.port'), fullWidth: true, style: { marginRight: 10 }, floatingLabelFixed: true }),
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNURL.pathname.replace('/', ''), onChange: function onChange(e, v) {
+                                    },
+                                    floatingLabelText: this.t('advanced.mongo.port'),
+                                    fullWidth: true,
+                                    style: { marginRight: 10 },
+                                    floatingLabelFixed: true
+                                }),
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNURL.pathname.replace('/', ''),
+                                    onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'pathname', '/' + v);
-                                    }, floatingLabelText: this.t('advanced.mongo.db'), fullWidth: true, floatingLabelFixed: true }),
+                                    },
+                                    floatingLabelText: this.t('advanced.mongo.db'),
+                                    fullWidth: true,
+                                    floatingLabelFixed: true
+                                }),
                                 performingCheck === 'MONGO' && _react2.default.createElement(
-                                    'div',
-                                    { style: { minWidth: 48, height: 48, padding: 12, boxSizing: 'border-box' } },
+                                    'div', { style: { minWidth: 48, height: 48, padding: 12, boxSizing: 'border-box' } },
                                     _react2.default.createElement(_materialUi.CircularProgress, { size: 20, thickness: 2.5 })
                                 ),
                                 _react2.default.createElement(
                                     'div',
                                     null,
-                                    mongoDSNValid && _react2.default.createElement(_materialUi.FontIcon, { className: "mdi mdi-check", color: "#4caf50", style: { width: 25, height: 32, marginLeft: 10 } }),
-                                    !mongoDSNValid && performingCheck !== 'MONGO' && _react2.default.createElement(_materialUi.IconButton, {
+                                    mongoDSNValid && _react2.default.createElement(_materialUi.FontIcon, { className: "mdi mdi-check", color: "#4caf50", style: { width: 25, height: 32, marginLeft: 10 } }), !mongoDSNValid && performingCheck !== 'MONGO' && _react2.default.createElement(_materialUi.IconButton, {
                                         disabled: !DocumentsDSN || !!performingCheck,
                                         iconClassName: "mdi mdi-login-variant",
                                         tooltip: this.t('advanced.mongo.validate'),
                                         tooltipPosition: "bottom-left",
                                         onClick: function onClick() {
                                             _this8.setState({ mongoDSNError: null });
-                                            _this8.checkMongoDSN(function (result) {
+                                            _this8.checkMongoDSN(function(result) {
                                                 var data = JSON.parse(result.JsonResult);
                                                 if (result.Success) {
                                                     _this8.setState({ mongoDSNValid: true });
@@ -1085,48 +1086,64 @@ var InstallForm = function (_React$Component) {
                                 )
                             ),
                             _react2.default.createElement(
-                                'div',
-                                { style: { display: 'flex', alignItems: 'flex-end' } },
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNURL.username, onChange: function onChange(e, v) {
+                                'div', { style: { display: 'flex', alignItems: 'flex-end' } },
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNURL.username,
+                                    onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'username', v);
-                                    }, floatingLabelText: this.t('advanced.mongo.username'), fullWidth: true, style: { marginRight: 10 }, floatingLabelFixed: true }),
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNURL.password, onChange: function onChange(e, v) {
+                                    },
+                                    floatingLabelText: this.t('advanced.mongo.username'),
+                                    fullWidth: true,
+                                    style: { marginRight: 10 },
+                                    floatingLabelFixed: true
+                                }),
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNURL.password,
+                                    onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'password', v);
-                                    }, floatingLabelText: "Password", fullWidth: true, type: this.t('advanced.mongo.password'), style: { marginRight: 10 }, floatingLabelFixed: true }),
-                                _react2.default.createElement(_materialUi.TextField, { value: DSNSearchParams.get('authSource') || "",
+                                    },
+                                    floatingLabelText: "Password",
+                                    fullWidth: true,
+                                    type: this.t('advanced.mongo.password'),
+                                    style: { marginRight: 10 },
+                                    floatingLabelFixed: true
+                                }),
+                                _react2.default.createElement(_materialUi.TextField, {
+                                    value: DSNSearchParams.get('authSource') || "",
                                     onChange: function onChange(e, v) {
                                         return changeDSN(DSNURL, 'authSource', v);
                                     },
-                                    floatingLabelText: this.t('advanced.mongo.authSource'), fullWidth: true, floatingLabelFixed: true }),
+                                    floatingLabelText: this.t('advanced.mongo.authSource'),
+                                    fullWidth: true,
+                                    floatingLabelFixed: true
+                                }),
                                 _react2.default.createElement('div', { style: { minWidth: 48 } })
                             )
                         ),
                         _react2.default.createElement(
-                            'div',
-                            { style: { display: 'flex', alignItems: 'center', height: 40, cursor: 'pointer', width: 478 }, onClick: function onClick() {
+                            'div', {
+                                style: { display: 'flex', alignItems: 'center', height: 40, cursor: 'pointer', width: 478 },
+                                onClick: function onClick() {
                                     _this8.setState({ showAdvanced: !showAdvanced });
-                                } },
+                                }
+                            },
                             _react2.default.createElement(
-                                'div',
-                                { style: { flex: 1, fontSize: 14 } },
+                                'div', { style: { flex: 1, fontSize: 14 } },
                                 this.t('advanced.toggle')
                             ),
                             _react2.default.createElement(_materialUi.FontIcon, { className: showAdvanced ? "mdi mdi-chevron-down" : "mdi mdi-chevron-right" })
                         ),
                         showAdvanced && _react2.default.createElement(
-                            'div',
-                            { style: flexContainer },
+                            'div', { style: flexContainer },
                             _react2.default.createElement(
-                                'div',
-                                { style: { marginTop: 20 } },
+                                'div', { style: { marginTop: 20 } },
                                 this.t('advanced.default.datasource')
                             ),
                             _react2.default.createElement(
                                 'div',
                                 null,
                                 _react2.default.createElement(
-                                    _reduxForm.Field,
-                                    { name: 'dsType', component: renderSelectField },
+                                    _reduxForm.Field, { name: 'dsType', component: renderSelectField },
                                     _react2.default.createElement(_materialUi.MenuItem, { value: '', primaryText: this.t('form.dsType.FS') }),
                                     _react2.default.createElement(_materialUi.MenuItem, { value: 'S3', primaryText: this.t('form.dsType.S3') })
                                 )
@@ -1140,47 +1157,50 @@ var InstallForm = function (_React$Component) {
                                 'div',
                                 null,
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex', alignItems: 'flex-end' } },
+                                    'div', { style: { display: 'flex', alignItems: 'flex-end' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginRight: 5 } },
-                                        _react2.default.createElement(_reduxForm.Field, { name: 'dsS3Custom', component: renderTextField,
+                                        'div', { style: { flex: 1, marginRight: 5 } },
+                                        _react2.default.createElement(_reduxForm.Field, {
+                                            name: 'dsS3Custom',
+                                            component: renderTextField,
                                             floatingLabel: this.t('form.dsS3Custom.label'),
                                             label: this.t('form.dsS3Custom.legend')
                                         })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 5 } },
-                                        _react2.default.createElement(_reduxForm.Field, { name: 'dsS3CustomRegion', component: renderTextField,
+                                        'div', { style: { flex: 1, marginLeft: 5 } },
+                                        _react2.default.createElement(_reduxForm.Field, {
+                                            name: 'dsS3CustomRegion',
+                                            component: renderTextField,
                                             floatingLabel: this.t('form.dsS3CustomRegion.label'),
-                                            label: this.t('form.dsS3CustomRegion.legend') })
+                                            label: this.t('form.dsS3CustomRegion.legend')
+                                        })
                                     ),
                                     _react2.default.createElement('div', { style: { width: 48 } })
                                 ),
                                 _react2.default.createElement(
-                                    'div',
-                                    { style: { display: 'flex', alignItems: 'flex-end' } },
+                                    'div', { style: { display: 'flex', alignItems: 'flex-end' } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginRight: 5 } },
-                                        _react2.default.createElement(_reduxForm.Field, { name: 'dsS3ApiKey', component: renderTextField,
+                                        'div', { style: { flex: 1, marginRight: 5 } },
+                                        _react2.default.createElement(_reduxForm.Field, {
+                                            name: 'dsS3ApiKey',
+                                            component: renderTextField,
                                             floatingLabel: this.t('form.dsS3ApiKey.label'),
                                             label: this.t('form.dsS3ApiKey.legend'),
                                             errorText: s3CheckKeysError && s3CheckKeysError.error || s3CheckBucketsError
                                         })
                                     ),
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1, marginLeft: 5 } },
-                                        _react2.default.createElement(_reduxForm.Field, { name: 'dsS3ApiSecret', component: renderPassField,
+                                        'div', { style: { flex: 1, marginLeft: 5 } },
+                                        _react2.default.createElement(_reduxForm.Field, {
+                                            name: 'dsS3ApiSecret',
+                                            component: renderPassField,
                                             floatingLabel: this.t('form.dsS3ApiSecret.label'),
-                                            label: this.t('form.dsS3ApiSecret.legend') })
+                                            label: this.t('form.dsS3ApiSecret.legend')
+                                        })
                                     ),
                                     performingCheck === 'S3_KEYS' && _react2.default.createElement(
-                                        'div',
-                                        { style: { width: 48, height: 48, padding: 12, boxSizing: 'border-box' } },
+                                        'div', { style: { width: 48, height: 48, padding: 12, boxSizing: 'border-box' } },
                                         _react2.default.createElement(_materialUi.CircularProgress, { size: 20, thickness: 2.5 })
                                     ),
                                     _react2.default.createElement(
@@ -1192,7 +1212,7 @@ var InstallForm = function (_React$Component) {
                                             tooltip: this.t('form.dsS3ValidateKeys'),
                                             tooltipPosition: "bottom-left",
                                             onClick: function onClick() {
-                                                _this8.checkS3Config(function (result) {
+                                                _this8.checkS3Config(function(result) {
                                                     var data = JSON.parse(result.JsonResult);
                                                     if (result.Success) {
                                                         _this8.setState({ s3CheckKeysSuccess: data });
@@ -1211,7 +1231,7 @@ var InstallForm = function (_React$Component) {
                                         value: s3BucketsPrefix || '',
                                         onChange: function onChange(e, v) {
                                             _this8.setState({ s3BucketsPrefix: v });
-                                            change('dsS3BucketDefault', v + 'pydiods1');
+                                            change('dsS3BucketDefault', v + 'cells_default');
                                             change('dsS3BucketPersonal', v + 'personal');
                                             change('dsS3BucketCells', v + 'cellsdata');
                                             change('dsS3BucketBinaries', v + 'binaries');
@@ -1238,44 +1258,36 @@ var InstallForm = function (_React$Component) {
 
             var eventsLength = installEvents.length - 1;
             steps.push(_react2.default.createElement(
-                _materialUi.Step,
-                { key: steps.length - 1, style: stepperStyles.step },
+                _materialUi.Step, { key: steps.length - 1, style: stepperStyles.step },
                 _react2.default.createElement(
-                    _materialUi.StepLabel,
-                    { style: stepIndex >= 4 + stepOffset ? stepperStyles.label : {} },
+                    _materialUi.StepLabel, { style: stepIndex >= 4 + stepOffset ? stepperStyles.label : {} },
                     this.t('apply.stepLabel')
                 ),
                 _react2.default.createElement(
-                    _materialUi.StepContent,
-                    { style: stepperStyles.content },
+                    _materialUi.StepContent, { style: stepperStyles.content },
                     _react2.default.createElement(
-                        'div',
-                        { style: stepperStyles.contentScroller },
+                        'div', { style: stepperStyles.contentScroller },
                         _react2.default.createElement(
                             'h3',
                             null,
                             this.t('apply.title')
                         ),
                         _react2.default.createElement(
-                            'div',
-                            { style: { padding: '20px 0' } },
+                            'div', { style: { padding: '20px 0' } },
                             _react2.default.createElement(_materialUi.LinearProgress, { min: 0, max: 100, value: installProgress, style: { width: '100%' }, mode: "indeterminate" })
                         ),
                         _react2.default.createElement(
-                            'div',
-                            { style: _extends({}, flexContainer, { paddingRight: 20, paddingTop: 10, fontSize: 14, paddingBottom: 20 }) },
-                            installEvents.map(function (e, i) {
+                            'div', { style: _extends({}, flexContainer, { paddingRight: 20, paddingTop: 10, fontSize: 14, paddingBottom: 20 }) },
+                            installEvents.map(function(e, i) {
                                 var icon = _react2.default.createElement(_materialUi.FontIcon, { className: "mdi mdi-check" });
                                 if (e.data.Message.indexOf('...') > -1) {
                                     if (i < eventsLength) return null; // if it's not the last, the next message will replace it
                                     icon = _react2.default.createElement(_materialUi.CircularProgress, { size: 20, thickness: 2, color: "rgba(0, 0, 0, 0.87)" });
                                 }
                                 return _react2.default.createElement(
-                                    'div',
-                                    { key: i, style: { display: 'flex', alignItems: 'center', height: 40 } },
+                                    'div', { key: i, style: { display: 'flex', alignItems: 'center', height: 40 } },
                                     _react2.default.createElement(
-                                        'div',
-                                        { style: { flex: 1 } },
+                                        'div', { style: { flex: 1 } },
                                         e.data.Message
                                     ),
                                     icon
@@ -1303,8 +1315,7 @@ var InstallForm = function (_React$Component) {
                         )
                     ),
                     installPerformed && serverRestarted && _react2.default.createElement(
-                        'div',
-                        { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
+                        'div', { style: { margin: '12px 0', display: 'flex', alignItems: 'center' } },
                         _react2.default.createElement('span', { style: { flex: 1 } }),
                         _react2.default.createElement(
                             'div',
@@ -1322,30 +1333,38 @@ var InstallForm = function (_React$Component) {
             ));
 
             return _react2.default.createElement(
-                _materialUi.Paper,
-                { zDepth: 2, style: { width: 800, minHeight: panelHeight, margin: 'auto', position: 'relative', backgroundColor: 'rgba(255,255,255,0.96)' } },
+                _materialUi.Paper, { zDepth: 2, style: { width: 800, minHeight: panelHeight, margin: 'auto', position: 'relative', backgroundColor: 'rgba(255,255,255,0.96)' } },
                 _react2.default.createElement(
-                    'div',
-                    { style: { width: 256, height: panelHeight, backgroundColor: 'rgb(94, 142, 174)', fontSize: 13, display: 'flex', flexDirection: 'column' } },
-                    _react2.default.createElement('div', { style: { backgroundImage: 'url(res/css/PydioLogo250.png)', backgroundSize: '90%',
-                            backgroundRepeat: 'no-repeat', backgroundPosition: 'center center', width: 256, height: 100 } }),
+                    'div', { style: { width: 256, height: panelHeight, backgroundColor: 'rgb(94, 142, 174)', fontSize: 13, display: 'flex', flexDirection: 'column' } },
+                    _react2.default.createElement('div', {
+                        style: {
+                            backgroundImage: 'url(res/css/PydioLogo250.png)',
+                            backgroundSize: '90%',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center center',
+                            width: 256,
+                            height: 100
+                        }
+                    }),
                     _react2.default.createElement(
-                        'form',
-                        { onSubmit: handleSubmit, autoComplete: "off", style: { flex: 1 } },
+                        'form', { onSubmit: handleSubmit, autoComplete: "off", style: { flex: 1 } },
                         _react2.default.createElement(
-                            _materialUi.Stepper,
-                            { activeStep: stepIndex, orientation: 'vertical' },
+                            _materialUi.Stepper, { activeStep: stepIndex, orientation: 'vertical' },
                             steps
                         )
                     ),
                     _react2.default.createElement(
-                        'div',
-                        { style: { height: 56, padding: '0px 16px' } },
+                        'div', { style: { height: 56, padding: '0px 16px' } },
                         _react2.default.createElement(
-                            _materialUi.SelectField,
-                            { value: lang, onChange: function onChange(e, i, v) {
+                            _materialUi.SelectField, {
+                                value: lang,
+                                onChange: function onChange(e, i, v) {
                                     change('frontendDefaultLanguage', v), _this8.setState({ lang: v });
-                                }, fullWidth: true, labelStyle: { color: 'rgba(255,255,255,.87)' }, underlineStyle: { display: 'none' } },
+                                },
+                                fullWidth: true,
+                                labelStyle: { color: 'rgba(255,255,255,.87)' },
+                                underlineStyle: { display: 'none' }
+                            },
                             supportedLanguages
                         )
                     )
@@ -1383,7 +1402,7 @@ InstallForm = (0, _reduxForm.reduxForm)({
 
 // Decorate with connect to read form values
 var selector = (0, _reduxForm.formValueSelector)('install'); // <-- same as form name
-InstallForm = (0, _reactRedux.connect)(function (state) {
+InstallForm = (0, _reactRedux.connect)(function(state) {
     var dbConnectionType = selector(state, 'dbConnectionType');
     var dbConfig = selector(state, 'dbConnectionType', 'dbManualDSN', 'dbSocketFile', 'dbSocketName', 'dbSocketUser', 'dbTCPHostname', 'dbTCPName', 'dbTCPPort', 'dbTCPUser', 'dbTCPPassword', 'dbSocketPassword', 'dbUseDefaults');
     var initialChecks = selector(state, 'CheckResults');

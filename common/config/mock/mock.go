@@ -54,7 +54,7 @@ var json = `{
     "database": {
       "$ref": "#/databases/adf1c786de879af52b30b1397b06ab66812a1269"
     },
-    "datasource": "pydiods1",
+    "datasource": "cells_default",
     "personalTokens": {
       "secureKey": "MXdD8+cvroEupov0fAd9IcznBjdJDVsstAtX50p7bsU="
     },
@@ -112,7 +112,7 @@ var json = `{
     },
     "pydio.grpc.data.index": {
       "sources": [
-        "pydiods1",
+        "cells_default",
         "personal",
         "cellsdata",
         "versions",
@@ -135,12 +135,12 @@ var json = `{
         "tree": "data_personal_tree"
       }
     },
-    "pydio.grpc.data.index.pydiods1": {
+    "pydio.grpc.data.index.cells_default": {
       "dsn": "default",
       "tables": {
-        "commits": "data_pydiods1_commits",
-        "nodes": "data_pydiods1_nodes",
-        "tree": "data_pydiods1_tree"
+        "commits": "data_cells_default_commits",
+        "nodes": "data_cells_default_nodes",
+        "tree": "data_cells_default_tree"
       }
     },
     "pydio.grpc.data.index.thumbnails": {
@@ -173,7 +173,7 @@ var json = `{
     },
     "pydio.grpc.data.sync": {
       "sources": [
-        "pydiods1",
+        "cells_default",
         "personal",
         "cellsdata",
         "versions",
@@ -206,16 +206,16 @@ var json = `{
         "normalize": "true"
       }
     },
-    "pydio.grpc.data.sync.pydiods1": {
+    "pydio.grpc.data.sync.cells_default": {
       "ApiKey": "qdambpVlABRTHyl5",
       "ApiSecret": "f00de219-1834-4787-a722-9cb75d11ee17",
       "FlatStorage": true,
-      "Name": "pydiods1",
-      "ObjectsBucket": "pydiods1",
+      "Name": "cells_default",
+      "ObjectsBucket": "cells_default",
       "ObjectsPort": 55417,
       "ObjectsServiceName": "local1",
       "StorageConfiguration": {
-        "folder": "/home/user/.config/pydio/cells/data/pydiods1",
+        "folder": "/home/user/.config/pydio/cells/data/cells_default",
         "normalize": "true"
       }
     },

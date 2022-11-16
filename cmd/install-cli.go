@@ -541,7 +541,7 @@ func setupS3Buckets(c *install.InstallConfig, knownBuckets []string, canCreate b
 		return
 	}
 	used = []string{
-		pref + "pydiods1",
+		pref + "cells_default",
 		pref + "personal",
 		pref + "cellsdata",
 		pref + "binaries",
@@ -562,7 +562,7 @@ func setupS3Buckets(c *install.InstallConfig, knownBuckets []string, canCreate b
 		}
 		toCreate = append(toCreate, bName)
 	}
-	c.DsS3BucketDefault = pref + "pydiods1"
+	c.DsS3BucketDefault = pref + "cells_default"
 	c.DsS3BucketPersonal = pref + "personal"
 	c.DsS3BucketCells = pref + "cellsdata"
 	c.DsS3BucketThumbs = pref + "thumbs"

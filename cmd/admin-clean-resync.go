@@ -52,10 +52,10 @@ DESCRIPTION
 
 EXAMPLES
 
-  To trigger the re-indexation of "pydiods1" datasource, target the "sync" service associated to the datasource : 
+  To trigger the re-indexation of "cells_default" datasource, target the "sync" service associated to the datasource : 
 
   1. Equivalent to "admin datasource resync" command:
-  $ ` + os.Args[0] + ` clean admin resync --service=pydio.grpc.data.sync.pydiods1 
+  $ ` + os.Args[0] + ` clean admin resync --service=pydio.grpc.data.sync.cells_default 
 
   2. Re-index search engine:
   $ ` + os.Args[0] + ` clean admin resync -s pydio.grpc.search

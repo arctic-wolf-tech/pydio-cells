@@ -79,16 +79,16 @@ var settingsNode = &rest.SettingsMenuResponse{
 						Component: "AdminWorkspaces.MetadataBoard",
 					},
 				},
-				{
-					Key:         "migration",
-					Label:       "migration.title",
-					Description: "migration.legend",
-					Metadata: &rest.SettingsEntryMeta{
-						IconClass: "mdi mdi-import",
-						Advanced:  true,
-						Component: "MigrationComponents.Dashboard",
-					},
-				},
+				// {
+				// 	Key:         "migration",
+				// 	Label:       "migration.title",
+				// 	Description: "migration.legend",
+				// 	Metadata: &rest.SettingsEntryMeta{
+				// 		IconClass: "mdi mdi-import",
+				// 		Advanced:  true,
+				// 		Component: "MigrationComponents.Dashboard",
+				// 	},
+				// },
 				{
 					Key:         "template-paths",
 					Label:       "settings.3c",
@@ -126,15 +126,15 @@ var settingsNode = &rest.SettingsMenuResponse{
 						Props:     `{"disableExport":true}`,
 					},
 				},
-				{
-					Key:         "update",
-					Label:       "updater.title",
-					Description: "updater.legend",
-					Metadata: &rest.SettingsEntryMeta{
-						IconClass: "mdi mdi-update",
-						Component: "AdminPlugins.UpdaterDashboard",
-					},
-				},
+				// {
+				// 	Key:         "update",
+				// 	Label:       "updater.title",
+				// 	Description: "updater.legend",
+				// 	Metadata: &rest.SettingsEntryMeta{
+				// 		IconClass: "mdi mdi-update",
+				// 		Component: "AdminPlugins.UpdaterDashboard",
+				// 	},
+				// },
 				{
 					Key:         "scheduler",
 					Label:       "ajxp_admin.scheduler.title",

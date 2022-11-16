@@ -57,13 +57,13 @@ DESCRIPTION
 EXAMPLES
 
   1. Dump database index inside a snapshot.db file inside the datasource storage:
-  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=pydiods1 --operation=dump --basename=snapshot.db
+  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=cells_default --operation=dump --basename=snapshot.db
 
   2. Reload database index from a snapshot.db file located inside the datasource storage:
-  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=pydiods1 --operation=load --basename=snapshot.db
+  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=cells_default --operation=load --basename=snapshot.db
 
   3. Remove a known snapshot.db file from datasource storage:
-  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=pydiods1 --operation=delete --basename=snapshot.db
+  $ ` + os.Args[0] + ` admin datasource snapshot --datasource=cells_default --operation=delete --basename=snapshot.db
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {

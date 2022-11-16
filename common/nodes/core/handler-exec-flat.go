@@ -259,6 +259,7 @@ func (f *FlatStorageHandler) resolveUUID(ctx context.Context, node *tree.Node) e
 // postCreate updates index after upload by re-read newly added S3 object to get ETag
 func (f *FlatStorageHandler) postCreate(ctx context.Context, node *tree.Node, requestMeta map[string]string, object *models.ObjectInfo) error {
 	var updateNode *tree.Node
+
 	if updateResp, err := f.ReadNode(ctx, &tree.ReadNodeRequest{Node: node}); err == nil {
 		updateNode = updateResp.GetNode()
 	} else if node.Uuid != "" {

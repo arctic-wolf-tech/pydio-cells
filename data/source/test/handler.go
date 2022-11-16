@@ -323,7 +323,7 @@ func (h *Handler) TestNodesClient(ctx context.Context) (*test.TestResult, error)
 	res := &test.TestResult{}
 
 	cl := compose.PathClient(ctx, nodes.AsAdmin())
-	err := cl.ListNodesWithCallback(ctx, &tree.ListNodesRequest{Node: &tree.Node{Path: "pydiods1"}}, func(ctx context.Context, node *tree.Node, err error) error {
+	err := cl.ListNodesWithCallback(ctx, &tree.ListNodesRequest{Node: &tree.Node{Path: "cells_default"}}, func(ctx context.Context, node *tree.Node, err error) error {
 		res.Log("Got node", node.Zap())
 		return nil
 	}, false)

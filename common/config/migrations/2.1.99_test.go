@@ -38,7 +38,7 @@ func TestMigration2_2_0(t *testing.T) {
 		},
 		"services": {
 			"pydio.grpc.data.sync": {
-			  "sources": "[\"mnt\",\"pydiods1\",\"personal\",\"cellsdata\",\"updated:1589793099\"]"
+			  "sources": "[\"mnt\",\"cells_default\",\"personal\",\"cellsdata\",\"updated:1589793099\"]"
 			}
 		},
 		"version": "2.1.0"
@@ -76,7 +76,7 @@ func TestMigration2_2_0_Self(t *testing.T) {
 		},
 		"services": {
 			"pydio.grpc.data.sync": {
-			  "sources": "[\"mnt\",\"pydiods1\",\"personal\",\"cellsdata\",\"updated:1589793099\"]"
+			  "sources": "[\"mnt\",\"cells_default\",\"personal\",\"cellsdata\",\"updated:1589793099\"]"
 			}
 		},
 		"version": "2.1.0"

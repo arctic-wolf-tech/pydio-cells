@@ -115,7 +115,7 @@ func getDefaultJobs() []*jobs.Job {
 			Label: "Videios Only",
 			Query: &service.Query{
 				SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
-					Extension: "mp4",
+					Extension: "mp4,mov,mkv,webm,avi,wmv", // flv,mpg
 					MinSize:   1,
 				})},
 			},
@@ -133,7 +133,7 @@ func getDefaultJobs() []*jobs.Job {
 					Label: "video only",
 					Query: &service.Query{
 						SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
-							Extension: "mp4",
+							Extension: "mp4,mov,mkv,webm,avi,wmv", // flv,mpg
 						})},
 					},
 				},

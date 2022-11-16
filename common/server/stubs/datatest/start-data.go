@@ -34,7 +34,7 @@ func RegisterTreeAndDatasources(treeNodes ...*tree.Node) error {
 	grpc.RegisterMock(common.ServiceMeta, mX)
 
 	dss := []string{
-		"pydiods1",
+		"cells_default",
 		"personal",
 		"cellsdata",
 		"thumbnails",

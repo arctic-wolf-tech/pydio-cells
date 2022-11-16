@@ -41,7 +41,7 @@ data:
     dss3custom: {{ include "cells.minioURL" . }}
     dss3apikey: {$MINIO_ROOT_USER}
     dss3apisecret: {$MINIO_ROOT_PASSWORD}
-    dss3bucketdefault: pydiods1
+    dss3bucketdefault: cells_default
     dss3bucketpersonal: personal
     dss3bucketcells: cellsdata
     dss3bucketbinaries: binaries

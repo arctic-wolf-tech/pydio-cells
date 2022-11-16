@@ -110,13 +110,13 @@ services:
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc config host add myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-      /usr/bin/mc rm -r --force myminio/pydiods1;
+      /usr/bin/mc rm -r --force myminio/cells_default;
       /usr/bin/mc rm -r --force myminio/personal;
       /usr/bin/mc rm -r --force myminio/cellsdata;
       /usr/bin/mc rm -r --force myminio/thumbs;
       /usr/bin/mc rm -r --force myminio/versions;
       /usr/bin/mc rm -r --force myminio/binaries;
-      /usr/bin/mc mb myminio/pydiods1;
+      /usr/bin/mc mb myminio/cells_default;
       /usr/bin/mc mb myminio/personal;
       /usr/bin/mc mb myminio/cellsdata;
       /usr/bin/mc mb myminio/thumbs;

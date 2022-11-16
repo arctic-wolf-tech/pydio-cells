@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"image"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -48,16 +49,18 @@ import (
 	"github.com/pydio/cells/v4/common/proto/tree"
 	json "github.com/pydio/cells/v4/common/utils/jsonx"
 	"github.com/pydio/cells/v4/scheduler/actions"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 const (
-	MetadataThumbnails      = "videoThumbnails"
-	MetadatavideoDimensions = "videoDimensions"
+	MetadataThumbnails      = "imageThumbnails"
+	MetadatavideoDimensions = "imageDimensions"
 
-	MetadataCompatIsvideo                 = "is_video"
-	MetadataCompatvideoWidth              = "video_width"
-	MetadataCompatvideoHeight             = "video_height"
+	MetadataCompatIsvideo                 = "is_image"
+	MetadataCompatvideoWidth              = "image_width"
+	MetadataCompatvideoHeight             = "image_height"
 	MetadataCompatvideoReadableDimensions = "readable_dimension"
+	MetadataCompatImagePreview            = "ImagePreview"
 )
 
 var (
@@ -172,41 +175,106 @@ func displayMemStat(_ context.Context, _ string) {
 	//stdlog.Printf("%s : \nAlloc = %v\nTotalAlloc = %v\nSys = %v\nNumGC = %v\n\n", position, m.Alloc / 1024 / 1024, m.TotalAlloc / 1024 / 1024, m.Sys / 1024, m.NumGC)
 }
 
+func ExampleReadFrameAsJpeg(inFileName string, frameNum int) io.Reader {
+	buf := bytes.NewBuffer(nil)
+	err := ffmpeg.Input(inFileName).
+		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).
+		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
+		WithOutput(buf, os.Stdout).
+		Run()
+	if err != nil {
+		panic(err)
+	}
+	return buf
+}
+
+func CreateDirIfNotExist(ctx context.Context, filePath string) {
+	fileDir, fileName := filepath.Split(filePath)
+	s, err := os.Stat(fileDir)
+	if err != nil {
+		os.Mkdir(fileDir, 0755)
+		log.Logger(ctx).Debug(fmt.Sprintf("create parrent dir %s for path  %s:  %t", fileDir, fileName, s.IsDir()))
+	}
+}
+
+func deleteFile(ctx context.Context, filePath string) {
+	err := os.Remove(filePath)
+
+	if err != nil {
+		log.Logger(ctx).Debug("remove file error " + err.Error())
+	}
+}
+
 func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes map[string]int) error {
 	displayMemStat(ctx, "START RESIZE")
 	// Open the test video.
 	if !node.HasSource() {
 		return fmt.Errorf("node does not have enough metadata for Resize (missing Source data)")
 	}
-
 	log.Logger(ctx).Debug("[THUMB EXTRACTOR] Getting object content", zap.String("Path", node.Path), zap.Int64("Size", node.Size))
 	var reader io.ReadCloser
 	var err error
 	var errPath string
-
+	var tempPath string
 	if localPath := getNodeLocalPath(node); len(localPath) > 0 {
 		reader, err = os.Open(localPath)
 		errPath = localPath
+		tempPath = localPath
+		log.Logger(ctx).Debug("customize ", zap.String("localpath", localPath))
 	} else {
 		// Security in case Router is not transmitting nodes immutably
 		routerNode := proto.Clone(node).(*tree.Node)
 		reader, err = getRouter(t.GetRuntimeContext()).GetObject(ctx, routerNode, &models.GetRequestData{Length: -1})
 		errPath = routerNode.Path
+		tempPath = routerNode.Path
+		log.Logger(ctx).Debug("customize ", zap.String("routePath", routerNode.Path))
 	}
+
 	if err != nil {
 		return errors.Wrap(err, errPath)
 	}
+	log.Logger(ctx).Info("customize before")
+	log.Logger(ctx).Info("customize" + tempPath)
+
+	finfo, err := os.Stat(tempPath)
+	if err != nil {
+		// no such file or dir
+		log.Logger(ctx).Debug("customize no such file")
+
+	} else {
+		log.Logger(ctx).Debug("customize file exists", zap.String("finfo", finfo.Name()))
+	}
+
 	defer reader.Close()
 
 	displayMemStat(ctx, "BEFORE DECODE")
-	src, err := imaging.Decode(reader)
+	// src, err := imaging.Decode(reader)
+
+	// data, err := ioutil.ReadAll(reader)
+	// ioutil.WriteFile("test", reader.Read())
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(reader)
+	uuidFilePath := "/data/disk1/download/test.mp4"
+	// uuidFilePath := "/tmp/pydio/" + uuid.New().String()
+	CreateDirIfNotExist(ctx, uuidFilePath)
+	ioutil.WriteFile(uuidFilePath, buf.Bytes(), 0666)
+
+	fileReader := ExampleReadFrameAsJpeg(uuidFilePath, 100)
+
+	log.Logger(ctx).Info("customize after")
+	thumb, err := imaging.Decode(fileReader)
+	fileReader = nil
+	buf = nil
+
 	if err != nil {
+		log.Logger(ctx).Info("customize ", zap.String("errInfo: ", err.Error()))
 		return errors.Wrap(err, errPath)
 	}
+
 	displayMemStat(ctx, "AFTER DECODE")
 
 	// Extract dimensions
-	bounds := src.Bounds()
+	bounds := thumb.Bounds()
 	width := bounds.Max.X
 	height := bounds.Max.Y
 	// Send update event right now
@@ -218,6 +286,7 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 		Height: height,
 	})
 	node.MustSetMeta(MetadataCompatIsvideo, true)
+	node.MustSetMeta(MetadataCompatImagePreview, true)
 	node.MustSetMeta(MetadataThumbnails, &ThumbnailsMeta{Processing: true})
 	node.MustSetMeta(MetadataCompatvideoHeight, height)
 	node.MustSetMeta(MetadataCompatvideoWidth, width)
@@ -238,7 +307,7 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 		}
 
 		displayMemStat(ctx, "BEFORE WRITE SIZE FROM SRC")
-		updateMeta, err := t.writeSizeFromSrc(ctx, src, node, size)
+		updateMeta, err := t.writeSizeFromSrc(ctx, thumb, node, size)
 		if err != nil {
 			// Remove processing state from Metadata
 			node.MustSetMeta(MetadataThumbnails, nil)
@@ -252,10 +321,13 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 				Format: "jpg",
 				Size:   size,
 			})
+		} else {
+			log.Logger(ctx).Debug("customize ", zap.String("path", tempPath))
 		}
 	}
 
-	src = nil
+	thumb = nil
+
 	runtime.GC()
 
 	displayMemStat(ctx, "AFTER TRIGGERING GC")
@@ -270,6 +342,8 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 	if err != nil {
 		err = errors.Wrap(err, errPath)
 	}
+
+	deleteFile(ctx, uuidFilePath)
 
 	return err
 }

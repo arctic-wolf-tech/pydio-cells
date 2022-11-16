@@ -111,7 +111,7 @@ etcd:
 
 minio:
   enabled: true
-  defaultBuckets: "thumbnails pydiods1 personal versions cellsdata binaries"
+  defaultBuckets: "thumbnails cells_default personal versions cellsdata binaries"
   volumePermissions:
     enabled: true
 

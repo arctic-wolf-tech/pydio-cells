@@ -76,7 +76,7 @@ func TestSearchUniqueUser(t *testing.T) {
 			Action:      &idm.ACLAction{Name: "read", Value: "1"},
 			RoleID:      "ROOT_GROUP",
 			WorkspaceID: testData.WsSlugToUuid("common-files"),
-			NodeID:      "pydiods1",
+			NodeID:      "cells_default",
 		})
 		fakeAcl.Flatten(bg)
 

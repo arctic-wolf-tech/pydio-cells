@@ -59,7 +59,7 @@ DESCRIPTION
 
 EXAMPLE
 
-  $ ` + os.Args[0] + ` admin file create-bench -n=100 -p=pydiods1/sandbox -u=admin
+  $ ` + os.Args[0] + ` admin file create-bench -n=100 -p=cells_default/sandbox -u=admin
 `,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		//initServices()
@@ -103,7 +103,7 @@ func benchRandomContent(u string) string {
 
 func init() {
 	benchCmd.Flags().IntVarP(&benchNumber, "number", "n", 0, "Number of files to create")
-	benchCmd.Flags().StringVarP(&benchPath, "path", "p", "pydiods1", "Path where to create the files")
+	benchCmd.Flags().StringVarP(&benchPath, "path", "p", "cells_default", "Path where to create the files")
 	benchCmd.Flags().StringVarP(&benchUser, "user", "u", "admin", "Username used to impersonate creation")
 	FileCmd.AddCommand(benchCmd)
 }

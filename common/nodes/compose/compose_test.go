@@ -61,7 +61,7 @@ func TestMain(m *testing.M) {
 
 	// Override default
 	nodes.RegisterStorageClient("mock", func(cfg configx.Values) (nodes.StorageClient, error) {
-		return omock.New("pydiods1", "personal", "cellsdata", "thumbnails", "versions"), nil
+		return omock.New("cells_default", "personal", "cellsdata", "thumbnails", "versions"), nil
 	})
 
 	if e := mock.RegisterMockConfig(); e != nil {

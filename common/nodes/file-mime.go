@@ -77,12 +77,13 @@ func NewTeeMimeReader(reader io.Reader, callbackRoutine func(result *MimeResult)
 	}
 	go func() {
 		<-mr.loaded
-		//fmt.Printf("Stored %d bytes in buffer - Error: %v\n", len(mr.data), mr.loadError)
 		kind, _ := filetype.Match(mr.data)
 		mime := kind.MIME.Value
+
 		if mime == mimeDefault || mime == "" {
 			mime = http.DetectContentType(mr.data)
 		}
+
 		if callbackRoutine != nil {
 			callbackRoutine(&MimeResult{mime: mime, err: mr.loadError})
 		}
@@ -142,6 +143,7 @@ func WrapReaderForMime(ctx context.Context, clone *tree.Node, reader io.Reader) 
 		if result.GetError() == nil && result.GetMime() != "" {
 			mime = result.GetMime()
 		}
+
 		// Store in metadata service
 		MustCoreMetaSet(bgCtx, clone.Uuid, common.MetaNamespaceMime, mime)
 	})

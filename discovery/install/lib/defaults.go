@@ -81,7 +81,7 @@ func GenerateDefaultConfig() *install.InstallConfig {
 	c.DbSocketUser = "root"
 	c.DbSocketPassword = ""
 	c.DbManualDSN = "root@tcp(localhost=3306)/cells"
-	c.DsName = "pydiods1"
+	c.DsName = "cells_default"
 	c.DsPort = fmt.Sprintf("%d", net.GetAvailablePort())
 	c.DsFolder = runtime.ApplicationWorkingDir(runtime.ApplicationDirData)
 	c.FrontendApplicationTitle = "Pydio Cells"

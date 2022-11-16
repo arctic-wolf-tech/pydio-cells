@@ -61,7 +61,7 @@ EXAMPLE
 
   List all files at the root of the "Common Files" workspace
 
-  $ ` + os.Args[0] + ` admin file ls --path pydiods1 --uuid
+  $ ` + os.Args[0] + ` admin file ls --path cells_default --uuid
 	+--------+---------------+--------------------------------------+--------+-----------------+
 	|  TYPE  |     PATH      |                 UUID                 |  SIZE  |    MODIFIED     |
 	+--------+---------------+--------------------------------------+--------+-----------------+

@@ -48,9 +48,9 @@ DESCRIPTION
 
 EXAMPLES
 
-  To trigger the re-indexation of "pydiods1" datasource, target the "sync" service associated to the datasource: 
+  To trigger the re-indexation of "cells_default" datasource, target the "sync" service associated to the datasource: 
 
-  $ ` + os.Args[0] + ` admin datasource resync --datasource=pydiods1
+  $ ` + os.Args[0] + ` admin datasource resync --datasource=cells_default
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -38,7 +38,7 @@ window.AdminPlugins = {
     CoreAndPluginsDashboard,
     AuthenticationPluginsDashboard,
     EditorsDashboard,
-    UpdaterDashboard,
+    // UpdaterDashboard,
     JSDocsDashboard,
     /*OpenApiDashboard,*/
     ServiceEditor,
