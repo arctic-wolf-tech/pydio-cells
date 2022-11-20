@@ -145,7 +145,7 @@ func WrapReaderForMime(ctx context.Context, clone *tree.Node, reader io.Reader) 
 		}
 
 		// Store in metadata service
-		MustCoreMetaSet(bgCtx, clone.Uuid, common.MetaNamespaceMime, mime)
+		MustCoreMetaSet(bgCtx, clone.Uuid, common.MetaNamespaceMime, mime, clone.HasMetaKey(common.MetaNamespaceDatasourceInternal))
 	})
 }
 

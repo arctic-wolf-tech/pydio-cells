@@ -108,9 +108,10 @@ func (o *URLOpener) OpenURL(ctx context.Context, u *url.URL) (config.Store, erro
 }
 
 type file struct {
-	v    configx.Values
-	snap configx.Values
-	path string
+	v      configx.Values
+	snap   configx.Values
+	path   string
+	locker *sync.RWMutex
 
 	opts []configx.Option
 
@@ -155,6 +156,7 @@ func New(path string, opts ...configx.Option) (config.Store, error) {
 	f := &file{
 		v:       v,
 		path:    path,
+		locker:  &sync.RWMutex{},
 		opts:    opts,
 		mainMtx: &sync.Mutex{},
 		mtx:     mtx,
@@ -260,11 +262,15 @@ func (f *file) Save(ctxUser string, ctxMessage string) error {
 }
 
 func (f *file) Lock() {
-	f.mainMtx.Lock()
+	f.locker.Lock()
 }
 
 func (f *file) Unlock() {
-	f.mainMtx.Unlock()
+	f.locker.Unlock()
+}
+
+func (f *file) NewLocker(name string) sync.Locker {
+	return f.mainMtx
 }
 
 func (f *file) Watch(opts ...configx.WatchOption) (configx.Receiver, error) {
@@ -275,6 +281,7 @@ func (f *file) Watch(opts ...configx.WatchOption) (configx.Receiver, error) {
 
 	r := &receiver{
 		closed:      false,
+		exit:        make(chan struct{}),
 		ch:          make(chan diff.Change),
 		path:        o.Path,
 		f:           f,
@@ -289,6 +296,7 @@ func (f *file) Watch(opts ...configx.WatchOption) (configx.Receiver, error) {
 
 type receiver struct {
 	closed bool
+	exit   chan struct{}
 	ch     chan diff.Change
 
 	path        []string
@@ -341,6 +349,8 @@ func (r *receiver) Next() (interface{}, error) {
 			}
 
 			return r.f.v.Val(r.path...), nil
+		case <-r.exit:
+			return nil, errors.New("channel is now closed")
 		}
 	}
 
@@ -349,6 +359,7 @@ func (r *receiver) Next() (interface{}, error) {
 
 func (r *receiver) Stop() {
 	r.closed = true
+	close(r.exit)
 	close(r.ch)
 }
 

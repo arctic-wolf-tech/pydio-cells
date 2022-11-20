@@ -24,10 +24,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
-
 	errors2 "github.com/pkg/errors"
 	"go.uber.org/zap"
+	"sync"
 
 	"github.com/pydio/cells/v4/common/log"
 	pb "github.com/pydio/cells/v4/common/proto/registry"
@@ -152,7 +151,13 @@ func (s *service) As(i interface{}) bool {
 
 // Start runs service and update registry as required
 func (s *service) Start(oo ...registry.RegisterOption) (er error) {
-	// now := time.Now()
+	// Making sure we only start one at a time for a unique service
+	if s.Options().Unique {
+		if locker := servicecontext.GetRegistry(s.opts.Context).NewLocker("start-service-" + s.Name()); locker != nil {
+			locker.Lock()
+			defer locker.Unlock()
+		}
+	}
 
 	defer func() {
 		if e := recover(); e != nil {
@@ -229,6 +234,11 @@ func (s *service) OnServe(oo ...registry.RegisterOption) error {
 	w := &sync.WaitGroup{}
 	w.Add(len(s.opts.AfterServe) + 1)
 	go func() {
+		if locker := servicecontext.GetRegistry(s.opts.Context).NewLocker("update-service-version-" + s.opts.Name); locker != nil {
+			locker.Lock()
+			defer locker.Unlock()
+		}
+
 		defer w.Done()
 		if e := UpdateServiceVersion(s.opts); e != nil {
 			log.Logger(s.opts.Context).Error("UpdateServiceVersion failed", zap.Error(e))

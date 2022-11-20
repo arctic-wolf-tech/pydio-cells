@@ -22,6 +22,7 @@ package config
 
 import (
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/pydio/cells/v4/common/utils/configx"
@@ -51,6 +52,16 @@ func NewVault(vaultStore, configStore Store) Store {
 	}
 }
 
+func (v *vault) Lock() {
+	v.config.Lock()
+	v.vault.Lock()
+}
+
+func (v *vault) Unlock() {
+	v.config.Unlock()
+	v.vault.Unlock()
+}
+
 func (v *vault) Close() error {
 	if err := v.config.Close(); err != nil {
 		return err
@@ -75,14 +86,36 @@ func (v *vault) Save(ctxUser string, ctxMessage string) error {
 	return v.config.Save(ctxUser, ctxMessage)
 }
 
-func (v *vault) Lock() {
-	v.config.Lock()
-	v.vault.Lock()
+func (v *vault) NewLocker(name string) sync.Locker {
+	configLocker := v.config.NewLocker(name)
+	vaultLocker := v.vault.NewLocker(name)
+
+	return &vaultStoreLocker{
+		configLocker: configLocker,
+		vaultLocker:  vaultLocker,
+	}
 }
 
-func (v *vault) Unlock() {
-	v.config.Unlock()
-	v.vault.Unlock()
+type vaultStoreLocker struct {
+	configLocker sync.Locker
+	vaultLocker  sync.Locker
+}
+
+func (v *vaultStoreLocker) Lock() {
+	if v.configLocker != nil {
+		v.configLocker.Lock()
+	}
+	if v.vaultLocker != nil {
+		v.vaultLocker.Lock()
+	}
+}
+func (v *vaultStoreLocker) Unlock() {
+	if v.configLocker != nil {
+		v.configLocker.Unlock()
+	}
+	if v.vaultLocker != nil {
+		v.vaultLocker.Unlock()
+	}
 }
 
 // Get access to the underlying structure at a certain path
