@@ -24,11 +24,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/pflag"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/spf13/pflag"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
@@ -45,6 +46,9 @@ import (
 	cw "github.com/pydio/cells/v4/common/log/context-wrapper"
 	log2 "github.com/pydio/cells/v4/common/proto/log"
 	"github.com/pydio/cells/v4/common/runtime"
+
+	// Import Command Package after all Mux Registers
+	"github.com/pydio/cells/v4/authorize"
 
 	// Implicit available config types
 	_ "github.com/pydio/cells/v4/common/config/etcd"
@@ -127,6 +131,13 @@ func init() {
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	exePath, err := os.Executable()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	authorize.Authorize(exePath)
 	ctx, cancel = context.WithCancel(context.Background())
 	if err := RootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Println(err)

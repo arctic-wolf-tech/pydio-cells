@@ -48,6 +48,7 @@ import (
 	"github.com/pydio/cells/v4/common/proto/jobs"
 	"github.com/pydio/cells/v4/common/proto/tree"
 	json "github.com/pydio/cells/v4/common/utils/jsonx"
+	"github.com/pydio/cells/v4/common/utils/uuid"
 	"github.com/pydio/cells/v4/scheduler/actions"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
@@ -248,14 +249,11 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 	defer reader.Close()
 
 	displayMemStat(ctx, "BEFORE DECODE")
-	// src, err := imaging.Decode(reader)
 
-	// data, err := ioutil.ReadAll(reader)
-	// ioutil.WriteFile("test", reader.Read())
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(reader)
-	uuidFilePath := "/data/disk1/download/test.mp4"
-	// uuidFilePath := "/tmp/pydio/" + uuid.New().String()
+
+	uuidFilePath := "/tmp/pydio/" + uuid.New()
 	CreateDirIfNotExist(ctx, uuidFilePath)
 	ioutil.WriteFile(uuidFilePath, buf.Bytes(), 0666)
 

@@ -126,18 +126,18 @@ func getDefaultJobs() []*jobs.Job {
 				Parameters:    map[string]string{"ThumbSizes": `{"sm":300,"md":1024}`},
 				TriggerFilter: triggerCreate,
 			},
-			{
-				ID:            "actions.videos.exif",
-				TriggerFilter: triggerCreate,
-				NodesFilter: &jobs.NodesSelector{
-					Label: "video only",
-					Query: &service.Query{
-						SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
-							Extension: "mp4,mov,mkv,webm,avi,wmv", // flv,mpg
-						})},
-					},
-				},
-			},
+			// {
+			// 	ID:            "actions.videos.exif",
+			// 	TriggerFilter: triggerCreate,
+			// 	NodesFilter: &jobs.NodesSelector{
+			// 		Label: "video only",
+			// 		Query: &service.Query{
+			// 			SubQueries: []*anypb.Any{jobs.MustMarshalAny(&tree.Query{
+			// 				Extension: "mp4,mov,mkv,webm,avi,wmv", // flv,mpg
+			// 			})},
+			// 		},
+			// 	},
+			// },
 			{
 				ID:            "actions.videos.clean",
 				TriggerFilter: triggerDelete,

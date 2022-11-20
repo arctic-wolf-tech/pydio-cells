@@ -33,4 +33,7 @@ __debug_bin
 minio
 minio.exe
 
+extends
+private.pem
+pydio.license
 
