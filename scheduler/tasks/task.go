@@ -129,7 +129,7 @@ func (t *Task) Queue(queue chan Runnable) {
 	}()
 	r := RootRunnable(t.context, t)
 	logStartMessageFromEvent(r.Context, t.event)
-	go r.Dispatch(r.ActionPath, createMessageFromEvent(t.event), t.Actions, queue)
+	go r.Dispatch(createMessageFromEvent(t.event), t.Actions, queue)
 }
 
 // CleanUp is triggered after a task has no more subroutines running.
@@ -221,43 +221,9 @@ func (t *Task) SetHasProgress() {
 	t.task.HasProgress = true
 }
 
-// AppendLog appends logs from an action to the task OutputChain
-func (t *Task) AppendLog(a *jobs.Action, in *jobs.ActionMessage, out *jobs.ActionMessage) {
-	// Remove unnecessary fields
-	// Action
-	cleanedAction := proto.Clone(a).(*jobs.Action)
-	cleanedAction.ChainedActions = nil
-	// Input
-	cleanedInput := proto.Clone(in).(*jobs.ActionMessage)
-	cleanedInput.Event = nil
-	cleanedInput.OutputChain = nil
-	// Output
-	cleanedOutput := proto.Clone(out).(*jobs.ActionMessage)
-	cleanedOutput.Event = nil
-	lastMessage := out.GetLastOutput()
-	cleanedOutput.OutputChain = []*jobs.ActionOutput{}
-	if lastMessage != nil {
-		cleanedOutput.OutputChain = append(cleanedOutput.OutputChain, lastMessage)
-	}
-
-	t.task.ActionsLogs = append(t.task.ActionsLogs, &jobs.ActionLog{
-		Action:        cleanedAction,
-		InputMessage:  cleanedInput,
-		OutputMessage: cleanedOutput,
-	})
-}
-
 // SetError set task in error globally
 func (t *Task) SetError(e error, appendLog bool) {
 	t.err = e
-	if appendLog {
-		t.task.ActionsLogs = append(t.task.ActionsLogs, &jobs.ActionLog{
-			OutputMessage: &jobs.ActionMessage{OutputChain: []*jobs.ActionOutput{{
-				Time:        int32(time.Now().Unix()),
-				ErrorString: e.Error(),
-			}}},
-		})
-	}
 }
 
 // GetRunnableChannels prepares a set of data channels for action actual Run method.

@@ -123,6 +123,7 @@ func (o *URLOpener) OpenURL(ctx context.Context, u *url.URL) (config.Store, erro
 }
 
 type etcd struct {
+	ctx          context.Context
 	values       configx.Values
 	valuesLocker *sync.RWMutex
 	ops          chan clientv3.Op
@@ -133,7 +134,8 @@ type etcd struct {
 	session  *concurrency.Session
 	leaseID  clientv3.LeaseID
 
-	locker    sync.Locker
+	locker    *sync.RWMutex
+	locks     map[string]*concurrency.Mutex
 	receivers []*receiver
 	reset     chan bool
 	opts      []configx.Option
@@ -149,7 +151,7 @@ func NewSource(ctx context.Context, cli *clientv3.Client, prefix string, session
 	var leaseID clientv3.LeaseID
 
 	if sessionTTL > -1 {
-		if s, err := concurrency.NewSession(cli, concurrency.WithTTL(sessionTTL)); err != nil {
+		if s, err := concurrency.NewSession(cli, concurrency.WithContext(ctx), concurrency.WithTTL(sessionTTL)); err != nil {
 			return nil, err
 		} else {
 			session = s
@@ -158,6 +160,7 @@ func NewSource(ctx context.Context, cli *clientv3.Client, prefix string, session
 	}
 
 	m := &etcd{
+		ctx:          ctx,
 		values:       configx.New(opts...),
 		valuesLocker: &sync.RWMutex{},
 		ops:          make(chan clientv3.Op, 3000),
@@ -166,7 +169,8 @@ func NewSource(ctx context.Context, cli *clientv3.Client, prefix string, session
 		leaseID:      leaseID,
 		prefix:       prefix,
 		withKeys:     withKeys,
-		locker:       &sync.Mutex{},
+		locker:       &sync.RWMutex{},
+		locks:        make(map[string]*concurrency.Mutex),
 		reset:        make(chan bool),
 		opts:         opts,
 		saveCh:       make(chan bool),
@@ -209,8 +213,14 @@ func (m *etcd) watch(ctx context.Context) {
 				key := strings.TrimPrefix(string(op.Kv.Key), m.prefix)
 				key = strings.TrimPrefix(key, "/")
 
-				if err := m.values.Val(key).Set(op.Kv.Value); err != nil {
-					fmt.Println("Error in etcd watch setting value for key ", op.Kv.Key)
+				if op.IsModify() || op.IsCreate() {
+					if err := m.values.Val(key).Set(op.Kv.Value); err != nil {
+						fmt.Println("Error in etcd watch setting value for key ", op.Kv.Key)
+					}
+				} else {
+					if err := m.values.Val(key).Del(); err != nil {
+						fmt.Println("Error in etcd deleting key ", op.Kv.Key)
+					}
 				}
 
 				var ops []*clientv3.Event
@@ -258,6 +268,7 @@ func (m *etcd) watch(ctx context.Context) {
 
 				for _, op := range ops {
 					updated := m.receivers[:0]
+					// fmt.Println("Setting ", string(op.Kv.Key), op.IsModify(), op.IsCreate())
 					for _, r := range m.receivers {
 						if err := r.call(op); err == nil {
 							updated = append(updated, r)
@@ -370,7 +381,10 @@ func (m *etcd) Done() <-chan struct{} {
 }
 
 func (m *etcd) Save(ctxUser string, ctxMessage string) error {
-	m.saveCh <- true
+	select {
+	case m.saveCh <- true:
+	case <-m.ctx.Done():
+	}
 
 	return nil
 }
@@ -381,6 +395,18 @@ func (m *etcd) Lock() {
 
 func (m *etcd) Unlock() {
 	m.locker.Unlock()
+}
+
+func (m *etcd) NewLocker(name string) sync.Locker {
+	select {
+	case <-m.ctx.Done():
+		return nil
+	case <-m.session.Done():
+		return nil
+	default:
+	}
+
+	return concurrency.NewLocker(m.session, name)
 }
 
 func (m *etcd) Watch(opts ...configx.WatchOption) (configx.Receiver, error) {
@@ -463,8 +489,9 @@ func (r *receiver) Next() (interface{}, error) {
 							return nil, err
 						}
 					}
-
 				}
+
+				// fmt.Println("Keys ", c.Val("delete", "service").Map())
 
 				return c, nil
 			}

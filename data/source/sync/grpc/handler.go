@@ -576,8 +576,8 @@ func (s *Handler) TriggerResync(c context.Context, req *protosync.ResyncRequest)
 		}
 	}
 
-	// Copy context
-	//bg := context.Background()
+	// Context extends request Context, which allows sync.Run cancellation from within the scheduler.
+	// Internal context used for SessionData is re-extended from context.Background
 	bg := metadata.WithUserNameMetadata(c, common.PydioSystemUsername)
 	bg = servicecontext.WithServiceName(bg, servicecontext.GetServiceName(c))
 	if s, o := servicecontext.SpanFromContext(c); o {

@@ -28,6 +28,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -57,8 +58,6 @@ func init() {
 }
 
 func (o *URLOpener) OpenURL(ctx context.Context, u *url.URL) (config.Store, error) {
-	// var opts []configx.Option
-
 	var conn grpc.ClientConnInterface
 
 	if clientcontext.GetClientConn(ctx) != nil {
@@ -78,20 +77,21 @@ func (o *URLOpener) OpenURL(ctx context.Context, u *url.URL) (config.Store, erro
 }
 
 type remote struct {
-	ctx  context.Context
-	cli  pb.ConfigClient
-	id   string
-	path []string
-
+	ctx      context.Context
+	cli      pb.ConfigClient
+	id       string
+	path     []string
+	locker   *sync.RWMutex
 	watchers []*receiver
 }
 
 func New(ctx context.Context, conn grpc.ClientConnInterface, id string, path string) config.Store {
 	r := &remote{
-		ctx:  metadata.AppendToOutgoingContext(ctx, ckeys.TargetServiceName, "pydio.grpc.config"),
-		cli:  pb.NewConfigClient(conn),
-		id:   id,
-		path: strings.Split(path, "/"),
+		ctx:    metadata.AppendToOutgoingContext(ctx, ckeys.TargetServiceName, "pydio.grpc.config"),
+		cli:    pb.NewConfigClient(conn),
+		id:     id,
+		path:   strings.Split(path, "/"),
+		locker: &sync.RWMutex{},
 	}
 
 	go func() {
@@ -207,9 +207,46 @@ func (r *remote) Save(ctxUser string, ctxMessage string) error {
 }
 
 func (r *remote) Lock() {
+	r.locker.Lock()
 }
 
 func (r *remote) Unlock() {
+	r.locker.Unlock()
+}
+
+func (r *remote) NewLocker(prefix string) sync.Locker {
+	stream, _ := r.cli.NewLocker(r.ctx)
+
+	return &remoteLock{
+		prefix: prefix,
+		stream: stream,
+	}
+}
+
+type remoteLock struct {
+	prefix string
+	stream pb.Config_NewLockerClient
+}
+
+func (s *remoteLock) Lock() {
+	if s.stream != nil {
+		if err := s.stream.Send(&pb.NewLockerRequest{
+			Prefix: s.prefix,
+			Type:   pb.LockType_Lock,
+		}); err != nil {
+			log.Warn("could not lock", zap.String("prefix", s.prefix))
+		}
+	}
+}
+func (s *remoteLock) Unlock() {
+	if s.stream != nil {
+		if err := s.stream.Send(&pb.NewLockerRequest{
+			Prefix: s.prefix,
+			Type:   pb.LockType_Unlock,
+		}); err != nil {
+			log.Warn("could not unlock", zap.String("prefix", s.prefix))
+		}
+	}
 }
 
 func (r *remote) Watch(opts ...configx.WatchOption) (configx.Receiver, error) {

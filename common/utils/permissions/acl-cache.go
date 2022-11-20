@@ -22,6 +22,7 @@ package permissions
 
 import (
 	"context"
+	"github.com/pydio/cells/v4/common/utils/std"
 	"sync"
 
 	"github.com/pydio/cells/v4/common"
@@ -76,16 +77,17 @@ func (a *AccessList) cache(key string) error {
 	defer a.maskBPLock.RUnlock()
 	defer a.maskBULock.RUnlock()
 	m := &CachedAccessList{
-		Wss:             a.wss,
-		WssRootsMasks:   a.wssRootsMasks,
 		OrderedRoles:    a.orderedRoles,
 		WsACLs:          a.wsACLs,
 		FrontACLs:       a.frontACLs,
-		MasksByUUIDs:    a.masksByUUIDs,
-		MasksByPaths:    a.masksByPaths,
-		ClaimsScopes:    a.claimsScopes,
 		HasClaimsScopes: a.hasClaimsScopes,
+		Wss:             std.CloneMap(a.wss),
+		WssRootsMasks:   std.CloneMap(a.wssRootsMasks),
+		MasksByUUIDs:    std.CloneMap(a.masksByUUIDs),
+		MasksByPaths:    std.CloneMap(a.masksByPaths),
+		ClaimsScopes:    std.CloneMap(a.claimsScopes),
 	}
+
 	return getAclCache().Set(key, m)
 }
 
@@ -95,17 +97,21 @@ func newFromCache(key string) (*AccessList, bool) {
 	if b := getAclCache().Get(key, &m); !b {
 		return nil, b
 	}
-	return &AccessList{
-		maskBPLock:      &sync.RWMutex{},
-		maskBULock:      &sync.RWMutex{},
-		wss:             m.Wss,
-		wssRootsMasks:   m.WssRootsMasks,
+	a := &AccessList{
+		// Use cached value directly
 		orderedRoles:    m.OrderedRoles,
 		wsACLs:          m.WsACLs,
 		frontACLs:       m.FrontACLs,
-		masksByUUIDs:    m.MasksByUUIDs,
-		masksByPaths:    m.MasksByPaths,
-		claimsScopes:    m.ClaimsScopes,
 		hasClaimsScopes: m.HasClaimsScopes,
-	}, true
+		// Re-init these
+		maskBPLock:    &sync.RWMutex{},
+		maskBULock:    &sync.RWMutex{},
+		wss:           std.CloneMap(m.Wss),
+		wssRootsMasks: std.CloneMap(m.WssRootsMasks),
+		masksByUUIDs:  std.CloneMap(m.MasksByUUIDs),
+		masksByPaths:  std.CloneMap(m.MasksByPaths),
+		claimsScopes:  std.CloneMap(m.ClaimsScopes),
+	}
+
+	return a, true
 }
