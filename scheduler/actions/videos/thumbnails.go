@@ -39,6 +39,8 @@ import (
 	"golang.org/x/image/colornames"
 	"google.golang.org/protobuf/proto"
 
+	"sync"
+
 	"github.com/pydio/cells/v4/common"
 	"github.com/pydio/cells/v4/common/client/grpc"
 	"github.com/pydio/cells/v4/common/forms"
@@ -66,6 +68,7 @@ const (
 
 var (
 	thumbnailsActionName = "actions.videos.thumbnails"
+	mutex                sync.Mutex
 )
 
 type ThumbnailData struct {
@@ -156,10 +159,15 @@ func (t *ThumbnailExtractor) Run(ctx context.Context, _ *actions.RunnableChannel
 
 	log.Logger(ctx).Debug("[THUMB EXTRACTOR] Resizing video...")
 	node := input.Nodes[0]
+
+	mutex.Lock()
 	err := t.resize(ctx, node, t.thumbSizes)
 	if err != nil {
 		return input.WithError(err), err
 	}
+	// debug.FreeOSMemory()
+
+	mutex.Unlock()
 
 	output := input
 	output.Nodes[0] = node
@@ -250,19 +258,22 @@ func (t *ThumbnailExtractor) resize(ctx context.Context, node *tree.Node, sizes 
 
 	displayMemStat(ctx, "BEFORE DECODE")
 
+	uuidFilePath := "/root/.config/pydio/tmp/" + uuid.New()
+
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(reader)
 
-	uuidFilePath := "/tmp/pydio/" + uuid.New()
 	CreateDirIfNotExist(ctx, uuidFilePath)
 	ioutil.WriteFile(uuidFilePath, buf.Bytes(), 0666)
+
+	buf.Reset()
+	buf = nil
 
 	fileReader := ExampleReadFrameAsJpeg(uuidFilePath, 100)
 
 	log.Logger(ctx).Info("customize after")
 	thumb, err := imaging.Decode(fileReader)
 	fileReader = nil
-	buf = nil
 
 	if err != nil {
 		log.Logger(ctx).Info("customize ", zap.String("errInfo: ", err.Error()))
